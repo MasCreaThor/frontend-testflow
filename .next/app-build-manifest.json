@@ -28,10 +28,11 @@
       "static/css/app/(auth)/register/page.css",
       "static/chunks/app/(auth)/register/page.js"
     ],
-    "/_not-found/page": [
+    "/(auth)/password-reset/request/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/css/app/(auth)/password-reset/request/page.css",
+      "static/chunks/app/(auth)/password-reset/request/page.js"
     ]
   }
 }

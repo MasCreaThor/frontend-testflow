@@ -1,9 +1,10 @@
 // src/hooks/useAuth.ts
-'use client'; // Importante para asegurar que los hooks se usen solo en Client Components
+'use client';
 
 import { useCallback } from 'react';
-import { useRouter } from 'next/navigation'; // Usar 'next/navigation' en App Router
+import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/auth.store';
+import { RegisterRequest } from '@/types/auth.types';
 
 export function useAuth() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export function useAuth() {
     isLoading, 
     error,
     login: loginStore,
+    register: registerStore,
     logout: logoutStore,
     requestPasswordReset: requestResetStore,
     resetPassword: resetPasswordStore,
@@ -28,6 +30,18 @@ export function useAuth() {
       router.push('/dashboard');
     }
   }, [loginStore, router, clearError]);
+
+  // Añadimos el tipo correcto para el parámetro data
+  const register = useCallback(async (data: RegisterRequest) => {
+    clearError();
+    const success = await registerStore(data);
+    
+    if (success) {
+      router.push('/dashboard');
+    }
+    
+    return success;
+  }, [registerStore, router, clearError]);
 
   const logout = useCallback(() => {
     logoutStore();
@@ -50,6 +64,7 @@ export function useAuth() {
     isLoading,
     error,
     login,
+    register,
     logout,
     requestPasswordReset,
     resetPassword,

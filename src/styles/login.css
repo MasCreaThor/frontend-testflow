@@ -1,0 +1,135 @@
+/* Estilos específicos para login */
+.login-container {
+    background: linear-gradient(135deg, #4338ca, #6366f1, #8b5cf6);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  .login-content {
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 1rem;
+    overflow: hidden;
+    display: flex;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  
+  .login-branding {
+    display: none;
+    width: 33.333333%;
+    padding: 3rem;
+    background-color: rgba(67, 56, 202, 0.7);
+    color: white;
+  }
+  
+  @media (min-width: 768px) {
+    .login-branding {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+  
+  .login-form-container {
+    width: 100%;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  @media (min-width: 768px) {
+    .login-form-container {
+      width: 66.666667%;
+      padding: 3rem;
+    }
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .password-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+  }
+  
+  .forgot-password-link {
+    font-size: 0.75rem;
+    color: #4f46e5;
+    text-decoration: none;
+  }
+  
+  .forgot-password-link:hover {
+    text-decoration: underline;
+  }
+  
+  .form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .checkbox-input {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d1d5db;
+    accent-color: #4f46e5;
+  }
+  
+  .checkbox-label {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+  
+  .form-separator {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+  }
+  
+  .form-separator::before,
+  .form-separator::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    background-color: #e5e7eb;
+  }
+  
+  .separator-text {
+    padding: 0 1rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .social-login-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background-color: white;
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .social-login-button:hover {
+    background-color: #f9fafb;
+  }
+  
+  .social-icon {
+    margin-right: 0.75rem;
+    color: #EA4335;
+  }
