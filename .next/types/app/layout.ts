@@ -1,4 +1,4 @@
-// File: C:\Users\CreaThor\Desktop\SEXTO SEMESTRE\PROYECTO\testflow\frontend\src\app\layout.tsx
+// File: C:\Users\Juan Amaranto\Documents\Instituto Tecnologico del Putumayo\TesFlow\frontend\src\app\layout.tsx
 import * as entry from '../../../src/app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
