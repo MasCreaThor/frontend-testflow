@@ -1,15 +1,16 @@
+// src/store/auth.store.ts
 import { create } from 'zustand';
 import { AuthService } from '@/services/auth.service';
 import { 
   ResetPasswordRequest, 
   SetNewPasswordRequest,
-  AuthResponse
+  AuthResponse,
+  RegisterRequest
 } from '@/types/auth.types';
 
 interface User {
   _id: string;
   email: string;
-  name: string;
 }
 
 interface AuthState {
@@ -17,6 +18,9 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  
+  // Acciones de registro
+  register: (data: RegisterRequest) => Promise<boolean>;
   
   // Acciones relacionadas con recuperación de contraseña
   requestPasswordReset: (data: ResetPasswordRequest) => Promise<boolean>;
@@ -37,6 +41,26 @@ const useAuthStore = create<AuthState>((set, get) => ({
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  
+  // Registrar nuevo usuario
+  register: async (data: RegisterRequest) => {
+    try {
+      set({ isLoading: true, error: null });
+      const response = await AuthService.register(data);
+      set({ 
+        user: response.user,
+        isAuthenticated: true,
+        isLoading: false 
+      });
+      return true;
+    } catch (error) {
+      set({ 
+        isLoading: false, 
+        error: error instanceof Error ? error.message : 'Error al registrar usuario' 
+      });
+      return false;
+    }
+  },
   
   // Solicitar correo para restablecer contraseña
   requestPasswordReset: async (data: ResetPasswordRequest) => {

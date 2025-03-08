@@ -1,3 +1,4 @@
+// src/components/auth/ResetPasswordForm.tsx
 'use client'; // Esta línea es crítica - marca el componente como Client Component
 
 import React from 'react';

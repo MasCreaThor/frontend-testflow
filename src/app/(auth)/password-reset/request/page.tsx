@@ -1,3 +1,4 @@
+// src/app/(auth)/password-reset/request/page.tsx
 'use client';
 
 import React from 'react';

@@ -1,3 +1,4 @@
+// src/components/auth/ResetPasswordRequestForm.tsx
 'use client'; // Marcar como Client Component
 
 import React from 'react';

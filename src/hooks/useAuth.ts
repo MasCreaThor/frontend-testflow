@@ -1,3 +1,4 @@
+// src/hooks/useAuth.ts
 'use client'; // Importante para asegurar que los hooks se usen solo en Client Components
 
 import { useCallback } from 'react';

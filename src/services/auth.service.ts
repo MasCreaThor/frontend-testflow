@@ -1,10 +1,12 @@
+// src/services/auth.service.ts
 import axios from 'axios';
 import { 
   AuthResponse, 
   ResetPasswordRequest, 
   ResetPasswordResponse, 
   SetNewPasswordRequest, 
-  SetNewPasswordResponse 
+  SetNewPasswordResponse,
+  RegisterRequest
 } from '@/types/auth.types';
 
 // Configuración base para axios
@@ -29,6 +31,31 @@ api.interceptors.request.use((config) => {
 });
 
 export const AuthService = {
+  /**
+   * Registra un nuevo usuario
+   */
+  register: async (data: RegisterRequest): Promise<AuthResponse> => {
+    try {
+      const response = await api.post('/auth/register', data);
+      
+      // Guardar tokens en localStorage
+      if (response.data.accessToken) {
+        localStorage.setItem('accessToken', response.data.accessToken);
+        
+        if (response.data.refreshToken) {
+          localStorage.setItem('refreshToken', response.data.refreshToken);
+        }
+      }
+      
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Error al registrar usuario');
+      }
+      throw new Error('Error al conectar con el servidor');
+    }
+  },
+
   /**
    * Solicita un correo para restablecer la contraseña
    */

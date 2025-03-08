@@ -1,8 +1,8 @@
-// File: C:\Users\CreaThor\Desktop\SEXTO SEMESTRE\PROYECTO\testflow\frontend\src\app\(auth)\password-reset\request\page.tsx
-import * as entry from '../../../../../../src/app/(auth)/password-reset/request/page.js'
+// File: C:\Users\CreaThor\Desktop\SEXTO SEMESTRE\PROYECTO\testflow\frontend\src\app\(auth)\register\page.tsx
+import * as entry from '../../../../../src/app/(auth)/register/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../../../src/app/(auth)/password-reset/request/page.js')
+type TEntry = typeof import('../../../../../src/app/(auth)/register/page.js')
 
 type SegmentParams<T extends Object = any> = T extends Record<string, any>
   ? { [K in keyof T]: T[K] extends string ? string | string[] | undefined : never }

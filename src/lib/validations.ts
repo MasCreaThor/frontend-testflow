@@ -1,3 +1,4 @@
+// src/lib/validations.ts
 import { z } from 'zod';
 
 // Esquema para validar solicitud de restablecimiento de contraseña

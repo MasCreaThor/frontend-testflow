@@ -1,11 +1,26 @@
+// src/app/layout.tsx
+import { Metadata } from 'next';
+import '@/styles/globals.css';
+
+export const metadata: Metadata = {
+  title: 'TestFlow - Aprende de forma inteligente',
+  description: 'Aplicación de aprendizaje personalizado',
+};
+
 export default function RootLayout({
-    children,
-  }: {
-    children: React.ReactNode
-  }) {
-    return (
-      <html lang="es">
-        <body>{children}</body>
-      </html>
-    )
-  }
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="es">
+      <head>
+        <link 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" 
+          rel="stylesheet" 
+        />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}

@@ -1,3 +1,4 @@
+// src/app/reset-password/[token]/page.tsx
 'use client';
 
 import React from 'react';
