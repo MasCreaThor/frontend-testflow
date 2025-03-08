@@ -1,5 +1,0 @@
-{
-  "/(auth)/password-reset/request/page": "app/(auth)/password-reset/request/page.js",
-  "/(auth)/register/page": "app/(auth)/register/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js"
-}
