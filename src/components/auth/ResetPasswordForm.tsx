@@ -156,7 +156,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                 {isLoading ? 'Guardando...' : 'Guardar nueva contraseña'}
                 <i className="fas fa-save button-icon"></i>
               </button>
-              <Link href="/login" className="back-link">
+              <Link href="/auth/login" className="back-link">
                 Volver a inicio de sesión
               </Link>
             </div>

@@ -56,7 +56,7 @@ export default function ResetPasswordRequestForm() {
             </p>
             <p className="success-note">Si no recibes el correo en unos minutos, verifica tu carpeta de spam.</p>
             <div className="form-actions">
-              <Link href="/login" className="back-button">
+              <Link href="/auth/login" className="back-button">
                 <i className="fas fa-arrow-left button-icon-left"></i>
                 Volver a inicio de sesión
               </Link>
@@ -112,7 +112,7 @@ export default function ResetPasswordRequestForm() {
                 <i className="fas fa-paper-plane button-icon"></i>
               </button>
               
-              <Link href="/login" className="back-link">
+              <Link href="/auth/login" className="back-link">
                 <i className="fas fa-arrow-left button-icon-left"></i>
                 Volver a inicio de sesión
               </Link>

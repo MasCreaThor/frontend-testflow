@@ -116,7 +116,7 @@ export default function LoginForm() {
             <div className="form-group">
               <div className="password-header">
                 <label htmlFor="password" className="form-label">Contraseña</label>
-                <Link href="/password-reset/request" className="forgot-password-link">
+                <Link href="/auth/password-reset/request" className="forgot-password-link">
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
@@ -167,7 +167,7 @@ export default function LoginForm() {
           
           <div className="form-footer">
             <span className="footer-text">¿No tienes una cuenta?</span>
-            <Link href="/register" className="footer-link">
+            <Link href="/auth/register" className="footer-link">
               Regístrate
             </Link>
           </div>
