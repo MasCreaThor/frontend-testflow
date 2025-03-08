@@ -9,6 +9,7 @@ export interface AuthResponse {
   refreshToken?: string;
 }
 
+
 export interface ResetPasswordRequest {
   email: string;
 }
