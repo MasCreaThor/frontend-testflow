@@ -6,6 +6,7 @@ node_modules/
 
 # Logs
 *.log
+*.next/
 
 # Environment variables
 .env
