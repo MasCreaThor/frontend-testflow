@@ -1,0 +1,169 @@
+/* src/styles/header.css */
+/* Estilos para la cabecera del dashboard */
+
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background-color: #fff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    height: 70px;
+  }
+  
+  /* Sección izquierda con botón de toggle */
+  .header-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar-toggle {
+    background: none;
+    border: none;
+    color: #6b7280;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .sidebar-toggle:hover {
+    background-color: #f3f4f6;
+    color: #4f46e5;
+  }
+  
+  .sidebar-toggle .fa-times {
+    color: #ef4444;
+  }
+  
+  /* Barra de búsqueda */
+  .header-search {
+    flex: 1;
+    max-width: 400px;
+    margin: 0 1rem;
+  }
+  
+  .search-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    pointer-events: none;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 9999px;
+    background-color: #f9fafb;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    background-color: #fff;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+  }
+  
+  .search-input::placeholder {
+    color: #9ca3af;
+  }
+  
+  /* Acciones del header */
+  .header-actions {
+    display: flex;
+    align-items: center;
+  }
+  
+  .notification-bell,
+  .help-button {
+    margin-left: 1rem;
+    position: relative;
+  }
+  
+  .notification-button,
+  .help-icon {
+    background: none;
+    border: none;
+    color: #6b7280;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+  }
+  
+  .notification-button:hover,
+  .help-icon:hover {
+    background-color: #f3f4f6;
+    color: #4f46e5;
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.75rem;
+    width: 18px;
+    height: 18px;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+  }
+  
+  /* Media queries para responsive */
+  @media (max-width: 768px) {
+    .dashboard-header {
+      padding: 1rem;
+      position: relative;
+      z-index: 60;
+    }
+    
+    .header-search {
+      max-width: 200px;
+    }
+    
+    .search-input {
+      padding: 0.5rem 1rem 0.5rem 2.25rem;
+    }
+    
+    .sidebar-toggle {
+      font-size: 1.5rem;
+      z-index: 200;
+      background-color: #f3f4f6;
+      width: 40px;
+      height: 40px;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .header-search {
+      display: none;
+    }
+    
+    .dashboard-header {
+      padding: 0.75rem;
+    }
+  }

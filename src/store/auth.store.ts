@@ -7,6 +7,7 @@ import {
   AuthResponse,
   RegisterRequest
 } from '@/types/auth.types';
+import { jwtDecode } from 'jwt-decode';
 
 interface User {
   _id: string;
@@ -29,6 +30,7 @@ interface AuthState {
   // Acciones generales de autenticación
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  initAuth: () => Promise<void>;
   
   // Acciones para el manejo de estado
   setLoading: (isLoading: boolean) => void;
@@ -36,11 +38,90 @@ interface AuthState {
   clearError: () => void;
 }
 
+interface JwtPayload {
+  sub: string;
+  email: string;
+  exp: number;
+}
+
 const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true, // Empezamos con loading true para evitar redirecciones innecesarias
   error: null,
+  
+  // Inicializar estado de autenticación basado en localStorage
+  initAuth: async () => {
+    try {
+      set({ isLoading: true });
+      
+      // Verificar si hay un token en localStorage
+      const token = localStorage.getItem('accessToken');
+      
+      if (token) {
+        try {
+          // Decodificar el token para verificar expiración
+          const decodedToken = jwtDecode<JwtPayload>(token);
+          
+          // Verificar si el token ha expirado
+          const isTokenValid = decodedToken.exp * 1000 > Date.now();
+          
+          if (isTokenValid) {
+            // Token válido, establecer el usuario y estado de autenticación
+            set({ 
+              user: {
+                _id: decodedToken.sub,
+                email: decodedToken.email
+              },
+              isAuthenticated: true,
+              isLoading: false
+            });
+            return;
+          } else {
+            // Token expirado, intentar refrescar si hay un refreshToken
+            const refreshToken = localStorage.getItem('refreshToken');
+            if (refreshToken) {
+              try {
+                const response = await AuthService.refreshToken(refreshToken);
+                localStorage.setItem('accessToken', response.accessToken);
+                if (response.refreshToken) {
+                  localStorage.setItem('refreshToken', response.refreshToken);
+                }
+                
+                set({ 
+                  user: response.user,
+                  isAuthenticated: true,
+                  isLoading: false
+                });
+                return;
+              } catch (error) {
+                // Error al refrescar el token, limpiar localStorage
+                AuthService.logout();
+              }
+            }
+          }
+        } catch (error) {
+          // Error al decodificar el token, limpiar localStorage
+          AuthService.logout();
+        }
+      }
+      
+      // Si no hay token o el token es inválido
+      set({ 
+        user: null,
+        isAuthenticated: false,
+        isLoading: false
+      });
+    } catch (error) {
+      console.error('Error initializing auth:', error);
+      AuthService.logout();
+      set({
+        user: null,
+        isAuthenticated: false,
+        isLoading: false
+      });
+    }
+  },
   
   // Registrar nuevo usuario
   register: async (data: RegisterRequest) => {

@@ -57,6 +57,31 @@ export const AuthService = {
   },
 
   /**
+   * Refresca el token de acceso utilizando un token de refresco
+   */
+  refreshToken: async (refreshToken: string): Promise<AuthResponse> => {
+    try {
+      const response = await api.post('/auth/refresh-token', { refreshToken });
+      
+      // Guardar nuevos tokens en localStorage
+      if (response.data.accessToken) {
+        localStorage.setItem('accessToken', response.data.accessToken);
+        
+        if (response.data.refreshToken) {
+          localStorage.setItem('refreshToken', response.data.refreshToken);
+        }
+      }
+      
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.message || 'Error al refrescar el token');
+      }
+      throw new Error('Error al conectar con el servidor');
+    }
+  },
+
+  /**
    * Solicita un correo para restablecer la contraseña
    */
   requestPasswordReset: async (data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {

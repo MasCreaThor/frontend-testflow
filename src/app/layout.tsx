@@ -1,5 +1,6 @@
 // src/app/layout.tsx
 import { Metadata } from 'next';
+import AuthProvider from '@/components/providers/AuthProvider';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -20,7 +21,11 @@ export default function RootLayout({
           rel="stylesheet" 
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   );
 }
