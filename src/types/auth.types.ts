@@ -33,6 +33,7 @@ export interface UserProfile {
   userId: string;
   firstName: string;
   lastName: string;
+  profileImage?: string;
   studyGoals?: string[];
   createdAt?: string;
   updatedAt?: string;
@@ -58,5 +59,6 @@ export interface RegisterRequest {
 export interface UpdateProfileRequest {
   firstName?: string;
   lastName?: string;
+  profileImage?: string;
   studyGoals?: string[];
 }
