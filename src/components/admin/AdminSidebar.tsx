@@ -42,14 +42,24 @@ export default function AdminSidebar({ isOpen, toggleSidebar }: AdminSidebarProp
       icon: 'fas fa-user-tag',
     },
     {
-      name: 'Permisos',
-      href: '/admin/permissions',
-      icon: 'fas fa-shield-alt',
+      name: 'Asignación de Roles',
+      href: '/admin/user-roles',
+      icon: 'fas fa-user-shield',
     },
     {
       name: 'Categorías',
       href: '/admin/categories',
       icon: 'fas fa-list',
+    },
+    {
+      name: 'Objetivos de Estudio',
+      href: '/admin/study-goals',
+      icon: 'fas fa-bullseye',
+    },
+    {
+      name: 'Permisos',
+      href: '/admin/permissions',
+      icon: 'fas fa-shield-alt',
     },
     {
       name: 'Documentos',

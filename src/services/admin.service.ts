@@ -32,11 +32,48 @@ const mockData = {
   }
 };
 
+// Interfaces
 export interface AdminStats {
   users: number;
   documents: number;
   quizzes: number;
   roles: number;
+}
+
+export interface CategoryData {
+  _id: string;
+  name: string;
+  description?: string;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface StudyGoalData {
+  _id: string;
+  name: string;
+  description?: string;
+  isActive?: boolean;
+  categoryId?: string;
+  category?: {
+    _id: string;
+    name: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateCategoryDto {
+  name: string;
+  description?: string;
+  isActive?: boolean;
+}
+
+export interface CreateStudyGoalDto {
+  name: string;
+  description?: string;
+  categoryId?: string;
+  isActive?: boolean;
 }
 
 export const adminService = {
@@ -144,6 +181,147 @@ export const adminService = {
     } catch (error) {
       console.error('Error eliminando rol:', error);
       throw new Error('No se pudo eliminar el rol del usuario');
+    }
+  },
+
+  /**
+   * Obtiene listado de categorías
+   */
+  getCategories: async (): Promise<CategoryData[]> => {
+    try {
+      const response = await api.get('/categories');
+      return response.data;
+    } catch (error) {
+      console.error('Error obteniendo categorías:', error);
+      throw new Error('No se pudieron obtener las categorías');
+    }
+  },
+
+  /**
+   * Obtiene detalles de una categoría
+   */
+  getCategoryById: async (categoryId: string): Promise<CategoryData> => {
+    try {
+      const response = await api.get(`/categories/${categoryId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error obteniendo categoría:', error);
+      throw new Error('No se pudo obtener la categoría');
+    }
+  },
+
+  /**
+   * Crea una nueva categoría
+   */
+  createCategory: async (categoryData: CreateCategoryDto): Promise<CategoryData> => {
+    try {
+      const response = await api.post('/categories', categoryData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creando categoría:', error);
+      throw new Error('No se pudo crear la categoría');
+    }
+  },
+
+  /**
+   * Actualiza una categoría existente
+   */
+  updateCategory: async (categoryId: string, categoryData: Partial<CreateCategoryDto>): Promise<CategoryData> => {
+    try {
+      const response = await api.put(`/categories/${categoryId}`, categoryData);
+      return response.data;
+    } catch (error) {
+      console.error('Error actualizando categoría:', error);
+      throw new Error('No se pudo actualizar la categoría');
+    }
+  },
+
+  /**
+   * Elimina una categoría
+   */
+  deleteCategory: async (categoryId: string): Promise<void> => {
+    try {
+      await api.delete(`/categories/${categoryId}`);
+    } catch (error) {
+      console.error('Error eliminando categoría:', error);
+      throw new Error('No se pudo eliminar la categoría');
+    }
+  },
+
+  /**
+   * Obtiene listado de objetivos de estudio
+   */
+  getStudyGoals: async (): Promise<StudyGoalData[]> => {
+    try {
+      const response = await api.get('/study-goals');
+      return response.data;
+    } catch (error) {
+      console.error('Error obteniendo objetivos de estudio:', error);
+      throw new Error('No se pudieron obtener los objetivos de estudio');
+    }
+  },
+
+  /**
+   * Obtiene objetivos de estudio por categoría
+   */
+  getStudyGoalsByCategory: async (categoryId: string): Promise<StudyGoalData[]> => {
+    try {
+      const response = await api.get(`/study-goals/category/${categoryId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error obteniendo objetivos por categoría:', error);
+      throw new Error('No se pudieron obtener los objetivos de la categoría');
+    }
+  },
+
+  /**
+   * Obtiene detalles de un objetivo de estudio
+   */
+  getStudyGoalById: async (goalId: string): Promise<StudyGoalData> => {
+    try {
+      const response = await api.get(`/study-goals/${goalId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error obteniendo objetivo de estudio:', error);
+      throw new Error('No se pudo obtener el objetivo de estudio');
+    }
+  },
+
+  /**
+   * Crea un nuevo objetivo de estudio
+   */
+  createStudyGoal: async (goalData: CreateStudyGoalDto): Promise<StudyGoalData> => {
+    try {
+      const response = await api.post('/study-goals', goalData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creando objetivo de estudio:', error);
+      throw new Error('No se pudo crear el objetivo de estudio');
+    }
+  },
+
+  /**
+   * Actualiza un objetivo de estudio existente
+   */
+  updateStudyGoal: async (goalId: string, goalData: Partial<CreateStudyGoalDto>): Promise<StudyGoalData> => {
+    try {
+      const response = await api.put(`/study-goals/${goalId}`, goalData);
+      return response.data;
+    } catch (error) {
+      console.error('Error actualizando objetivo de estudio:', error);
+      throw new Error('No se pudo actualizar el objetivo de estudio');
+    }
+  },
+
+  /**
+   * Elimina un objetivo de estudio
+   */
+  deleteStudyGoal: async (goalId: string): Promise<void> => {
+    try {
+      await api.delete(`/study-goals/${goalId}`);
+    } catch (error) {
+      console.error('Error eliminando objetivo de estudio:', error);
+      throw new Error('No se pudo eliminar el objetivo de estudio');
     }
   }
 };
