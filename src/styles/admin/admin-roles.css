@@ -1,0 +1,497 @@
+/* src/styles/admin/admin-roles.css */
+/* Estilos para la página de gestión de roles */
+
+.admin-roles {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* Acciones superiores */
+  .roles-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+  }
+  
+  .create-button {
+    display: flex;
+    align-items: center;
+    padding: 0.625rem 1rem;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .create-button i {
+    margin-right: 0.5rem;
+  }
+  
+  .create-button:hover {
+    background-color: #059669;
+  }
+  
+  /* Grid de roles */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .role-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .role-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .role-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  
+  .role-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+  }
+  
+  .role-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .role-status.active {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+  
+  .role-status.inactive {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  .role-description {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+  
+  .role-permissions {
+    margin-bottom: 1rem;
+  }
+  
+  .permissions-count {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.5rem;
+  }
+  
+  .permissions-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .permission-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    background-color: #f1f5f9;
+    color: #475569;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  .permission-badge.more {
+    background-color: #e2e8f0;
+    font-weight: 500;
+  }
+  
+  .role-dates {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+  }
+  
+  .date-label {
+    font-weight: 500;
+    margin-right: 0.25rem;
+  }
+  
+  .role-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+  
+  .action-button {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+  }
+  
+  .action-button.view {
+    background-color: #e0f2fe;
+    color: #0284c7;
+  }
+  
+  .action-button.edit {
+    background-color: #fef3c7;
+    color: #b45309;
+  }
+  
+  .action-button.delete {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  .action-button.permissions {
+    background-color: #e0e7ff;
+    color: #4338ca;
+  }
+  
+  .action-button.view:hover {
+    background-color: #0284c7;
+    color: white;
+  }
+  
+  .action-button.edit:hover {
+    background-color: #b45309;
+    color: white;
+  }
+  
+  .action-button.delete:hover {
+    background-color: #b91c1c;
+    color: white;
+  }
+  
+  .action-button.permissions:hover {
+    background-color: #4338ca;
+    color: white;
+  }
+  
+  /* Modal de detalles de rol */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .role-details-modal {
+    width: 100%;
+    max-width: 600px;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    animation: modalShow 0.3s ease-out;
+  }
+  
+  .permissions-modal {
+    width: 100%;
+    max-width: 800px;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    animation: modalShow 0.3s ease-out;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  @keyframes modalShow {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+  }
+  
+  .close-button:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+  }
+  
+  .permissions-modal .modal-content {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .role-detail {
+    margin-bottom: 1rem;
+  }
+  
+  .detail-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .detail-value {
+    color: #1e293b;
+  }
+  
+  .detail-value.status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .detail-value.status.active {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+  
+  .detail-value.status.inactive {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  .permissions-detail {
+    margin-top: 1.5rem;
+  }
+  
+  .permissions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    gap: 1rem;
+  }
+  
+  .secondary-button {
+    padding: 0.625rem 1rem;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .secondary-button:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+  }
+  
+  .primary-button {
+    display: flex;
+    align-items: center;
+    padding: 0.625rem 1rem;
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .primary-button i {
+    margin-right: 0.5rem;
+  }
+  
+  .primary-button:hover {
+    background-color: #4f46e5;
+  }
+  
+  /* Estilos para el modal de permisos */
+  .permissions-instructions {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .permissions-search {
+    margin-bottom: 1.5rem;
+  }
+  
+  .search-input-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+  }
+  
+  .permissions-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .permission-group {
+    background-color: #f8fafc;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  .group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .group-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .group-checkbox input {
+    margin-right: 0.5rem;
+  }
+  
+  .group-name {
+    font-weight: 500;
+    color: #1e293b;
+  }
+  
+  .group-count {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+  
+  .group-permissions {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .permission-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .permission-checkbox input {
+    margin-right: 0.5rem;
+  }
+  
+  .permission-name {
+    font-size: 0.875rem;
+    color: #334155;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .roles-grid {
+      grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    }
+    
+    .group-permissions {
+      grid-template-columns: 1fr;
+    }
+  }

@@ -1,0 +1,96 @@
+/* src/styles/admin/admin.css */
+/* Estilos generales para el layout del panel administrativo */
+
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    background-color: #f1f5f9;
+  }
+  
+  .admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .admin-main.sidebar-open {
+    margin-left: 280px;
+  }
+  
+  .admin-main.sidebar-closed {
+    margin-left: 80px;
+  }
+  
+  .admin-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+  
+  /* Estado de carga */
+  .loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background-color: #f1f5f9;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(99, 102, 241, 0.2);
+    border-radius: 50%;
+    border-top-color: #6366f1;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Mensajes de carga y error */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+  }
+  
+  .error-alert {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .admin-main.sidebar-open,
+    .admin-main.sidebar-closed {
+      margin-left: 0;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .admin-content {
+      padding: 1rem;
+    }
+    
+    .admin-main {
+      width: 100%;
+      margin-left: 0 !important;
+    }
+  }
