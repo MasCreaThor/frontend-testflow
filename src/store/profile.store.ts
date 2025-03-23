@@ -8,13 +8,12 @@ interface ProfileState {
   isLoading: boolean;
   error: string | null;
   
-  // Acciones para obtener y actualizar perfil
   fetchProfile: (userId: string) => Promise<void>;
   updateProfile: (profileId: string, data: UpdateProfileRequest) => Promise<boolean>;
   uploadProfileImage: (profileId: string, file: File) => Promise<boolean>;
   deleteProfileImage: (profileId: string) => Promise<boolean>;
   
-  // Acciones para manejo del estado
+  // manejo del estado
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
@@ -25,7 +24,6 @@ const useProfileStore = create<ProfileState>((set, get) => ({
   isLoading: false,
   error: null,
   
-  // Obtener perfil
   fetchProfile: async (userId: string) => {
     try {
       set({ isLoading: true, error: null });
@@ -39,7 +37,6 @@ const useProfileStore = create<ProfileState>((set, get) => ({
     }
   },
   
-  // Actualizar perfil
   updateProfile: async (profileId: string, data: UpdateProfileRequest) => {
     try {
       set({ isLoading: true, error: null });
@@ -55,7 +52,6 @@ const useProfileStore = create<ProfileState>((set, get) => ({
     }
   },
   
-  // Subir imagen de perfil
   uploadProfileImage: async (profileId: string, file: File) => {
     try {
       set({ isLoading: true, error: null });
@@ -79,8 +75,7 @@ const useProfileStore = create<ProfileState>((set, get) => ({
       return false;
     }
   },
-  
-  // Eliminar imagen de perfil
+
   deleteProfileImage: async (profileId: string) => {
     try {
       set({ isLoading: true, error: null });

@@ -1,4 +1,4 @@
-// src/store/admin.store.ts (actualizado)
+// src/store/admin.store.ts
 import { create } from 'zustand';
 import { adminService } from '@/services/admin.service';
 
@@ -8,7 +8,7 @@ interface AdminState {
   error: string | null;
   
   // Acciones
-  checkAdminAccess: () => Promise<void>;
+  checkAdminAccess: () => Promise<boolean>;
   setError: (error: string | null) => void;
   clearError: () => void;
 }
@@ -27,15 +27,16 @@ const useAdminStore = create<AdminState>((set, get) => ({
       const hasAccess = await adminService.checkAdminAccess();
       console.log('Resultado verificación admin:', hasAccess);
       set({ hasAdminAccess: hasAccess, isLoading: false });
+      
+      return hasAccess; // Return the access status for immediate use
     } catch (error) {
       console.error('Error checking admin access:', error);
-      // En desarrollo, permitimos acceso para facilitar pruebas
-      console.log('Permitiendo acceso en desarrollo a pesar del error');
       set({ 
-        hasAdminAccess: true, 
+        hasAdminAccess: false, // Important: Set to false on error
         isLoading: false,
-        error: null
+        error: error instanceof Error ? error.message : 'Error verificando acceso de administrador'
       });
+      return false;
     }
   },
   

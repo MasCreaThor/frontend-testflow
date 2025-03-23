@@ -2,18 +2,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { adminService } from '@/services/admin.service';
+import { adminService, CategoryData } from '@/services/admin.service';
 import '@/styles/admin/admin-categories.css';
-
-interface CategoryData {
-  _id: string;
-  name: string;
-  description?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  studyGoalsCount?: number;
-}
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<CategoryData[]>([]);
@@ -28,7 +18,7 @@ export default function CategoriesPage() {
     isActive: true
   });
 
-  // Fetch categories on component mount
+  // Cargar de categorias
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -40,50 +30,9 @@ export default function CategoriesPage() {
       setCategories(data);
       setError(null);
     } catch (err) {
-      console.error('Error fetching categories:', err);
+      console.error('Error al cargar categorías:', err);
       setError('Error al cargar las categorías');
-      
-      // Sample data for development
-      const mockCategories: CategoryData[] = [
-        {
-          _id: '1',
-          name: 'Matemáticas',
-          description: 'Categoría de matemáticas para todos los niveles',
-          isActive: true,
-          createdAt: '2023-09-01T10:00:00.000Z',
-          updatedAt: '2023-09-01T10:00:00.000Z',
-          studyGoalsCount: 12
-        },
-        {
-          _id: '2',
-          name: 'Física',
-          description: 'Temas de física clásica y moderna',
-          isActive: true,
-          createdAt: '2023-09-02T11:20:00.000Z',
-          updatedAt: '2023-09-02T11:20:00.000Z',
-          studyGoalsCount: 8
-        },
-        {
-          _id: '3',
-          name: 'Programación',
-          description: 'Diferentes lenguajes y paradigmas de programación',
-          isActive: true,
-          createdAt: '2023-09-03T14:35:00.000Z',
-          updatedAt: '2023-09-03T14:35:00.000Z',
-          studyGoalsCount: 15
-        },
-        {
-          _id: '4',
-          name: 'Literatura',
-          description: 'Clásicos y literatura contemporánea',
-          isActive: false,
-          createdAt: '2023-09-04T08:15:00.000Z',
-          updatedAt: '2023-09-04T08:15:00.000Z',
-          studyGoalsCount: 5
-        }
-      ];
-      
-      setCategories(mockCategories);
+      setCategories([]);
     } finally {
       setIsLoading(false);
     }
@@ -105,7 +54,7 @@ export default function CategoriesPage() {
     setFormData({
       name: category.name,
       description: category.description || '',
-      isActive: category.isActive !== false // Default to true if undefined
+      isActive: category.isActive !== false
     });
     setIsModalOpen(true);
   };
@@ -132,11 +81,11 @@ export default function CategoriesPage() {
     
     try {
       if (isCreateMode) {
-        // Create new category
+        // Crear nueva categoría
         const newCategory = await adminService.createCategory(formData);
         setCategories(prev => [...prev, newCategory]);
       } else if (selectedCategory) {
-        // Update existing category
+        // Actualizar categoría existente
         const updatedCategory = await adminService.updateCategory(selectedCategory._id, formData);
         setCategories(prev => 
           prev.map(cat => cat._id === selectedCategory._id ? updatedCategory : cat)
@@ -146,7 +95,7 @@ export default function CategoriesPage() {
       handleCloseModal();
       setError(null);
     } catch (err) {
-      console.error('Error saving category:', err);
+      console.error('Error al guardar categoría:', err);
       setError('Error al guardar la categoría');
     } finally {
       setIsLoading(false);
@@ -154,7 +103,7 @@ export default function CategoriesPage() {
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
-    if (!confirm('¿Estás seguro de que deseas eliminar esta categoría? Esta acción no se puede deshacer.')) {
+    if (!confirm('¿Está seguro de que desea eliminar esta categoría? Esta acción no se puede deshacer.')) {
       return;
     }
     
@@ -164,7 +113,7 @@ export default function CategoriesPage() {
       await adminService.deleteCategory(categoryId);
       setCategories(prev => prev.filter(cat => cat._id !== categoryId));
     } catch (err) {
-      console.error('Error deleting category:', err);
+      console.error('Error al eliminar categoría:', err);
       setError('Error al eliminar la categoría');
     } finally {
       setIsLoading(false);
@@ -212,53 +161,57 @@ export default function CategoriesPage() {
         </div>
       )}
 
-      <div className="categories-grid">
-        {categories.map(category => (
-          <div key={category._id} className={`category-card ${!category.isActive ? 'inactive' : ''}`}>
-            <div className="category-header">
-              <h3 className="category-name">{category.name}</h3>
-              <span className={`category-status ${category.isActive ? 'active' : 'inactive'}`}>
-                {category.isActive ? 'Activa' : 'Inactiva'}
-              </span>
-            </div>
-            <p className="category-description">
-              {category.description || 'Sin descripción'}
-            </p>
-            <div className="category-meta">
-              <div className="category-stats">
-                <span className="stats-item">
-                  <i className="fas fa-book"></i>
-                  {category.studyGoalsCount || 0} objetivos
+      {categories.length === 0 && !isLoading ? (
+        <div className="empty-state">
+          <div className="empty-icon">
+            <i className="fas fa-folder-open"></i>
+          </div>
+          <h2 className="empty-title">No hay categorías</h2>
+          <p className="empty-description">
+            No se han encontrado categorías en el sistema. Crea una nueva categoría para comenzar.
+          </p>
+        </div>
+      ) : (
+        <div className="categories-grid">
+          {categories.map(category => (
+            <div key={category._id} className={`category-card ${!category.isActive ? 'inactive' : ''}`}>
+              <div className="category-header">
+                <h3 className="category-name">{category.name}</h3>
+                <span className={`category-status ${category.isActive ? 'active' : 'inactive'}`}>
+                  {category.isActive ? 'Activa' : 'Inactiva'}
                 </span>
               </div>
+              <p className="category-description">
+                {category.description || 'Sin descripción'}
+              </p>
               <div className="category-dates">
                 <span className="date-item">
                   <i className="fas fa-calendar-alt"></i>
                   {formatDate(category.createdAt)}
                 </span>
               </div>
+              <div className="category-actions">
+                <button 
+                  className="action-button edit" 
+                  onClick={() => handleOpenEditModal(category)}
+                  title="Editar categoría"
+                >
+                  <i className="fas fa-edit"></i>
+                </button>
+                <button 
+                  className="action-button delete" 
+                  onClick={() => handleDeleteCategory(category._id)}
+                  title="Eliminar categoría"
+                >
+                  <i className="fas fa-trash-alt"></i>
+                </button>
+              </div>
             </div>
-            <div className="category-actions">
-              <button 
-                className="action-button edit" 
-                onClick={() => handleOpenEditModal(category)}
-                title="Editar categoría"
-              >
-                <i className="fas fa-edit"></i>
-              </button>
-              <button 
-                className="action-button delete" 
-                onClick={() => handleDeleteCategory(category._id)}
-                title="Eliminar categoría"
-              >
-                <i className="fas fa-trash-alt"></i>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* Modal for create/edit */}
+      {/* Modal para crear/editar */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="category-modal">

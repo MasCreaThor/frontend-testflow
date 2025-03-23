@@ -6,9 +6,27 @@ import '@/styles/admin/admin-header.css';
 
 interface AdminHeaderProps {
   toggleSidebar: () => void;
+  currentPath?: string;
 }
 
-export default function AdminHeader({ toggleSidebar }: AdminHeaderProps) {
+export default function AdminHeader({ toggleSidebar, currentPath }: AdminHeaderProps) {
+
+  const getPageTitle = (): string => {
+    if (!currentPath) return 'Panel de Administración';
+    
+    if (currentPath === '/admin') return 'Dashboard';
+    
+    const pathSegments = currentPath.split('/').filter(Boolean);
+    
+    if (pathSegments.length >= 2) {
+      // Convertir primera letra a mayuscula y el resto a minuscula
+      const pageName = pathSegments[1];
+      return pageName.charAt(0).toUpperCase() + pageName.slice(1).toLowerCase();
+    }
+    
+    return 'Panel de Administración';
+  };
+
   return (
     <header className="admin-header">
       <div className="header-left">
@@ -16,7 +34,7 @@ export default function AdminHeader({ toggleSidebar }: AdminHeaderProps) {
           <i className="fas fa-bars"></i>
         </button>
         <div className="breadcrumb">
-          <span className="breadcrumb-item">Panel de Administración</span>
+          <span className="breadcrumb-item">{getPageTitle()}</span>
         </div>
       </div>
       
@@ -35,7 +53,7 @@ export default function AdminHeader({ toggleSidebar }: AdminHeaderProps) {
         <div className="notification-bell">
           <button className="notification-button">
             <i className="fas fa-bell"></i>
-            <span className="notification-badge">3</span>
+            <span className="notification-badge">0</span>
           </button>
         </div>
         

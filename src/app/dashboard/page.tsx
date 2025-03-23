@@ -9,7 +9,7 @@ export default function DashboardPage() {
   const { user } = useAuthStore();
   const [greeting, setGreeting] = useState('');
 
-  // Definir el saludo según la hora del día
+
   useEffect(() => {
     const hour = new Date().getHours();
     
@@ -22,7 +22,6 @@ export default function DashboardPage() {
     }
   }, []);
 
-  // Datos de estadísticas (mock)
   const stats = [
     { label: 'Documentos', value: 12, icon: 'fas fa-file-alt', color: '#4F46E5' },
     { label: 'Cuestionarios', value: 25, icon: 'fas fa-question-circle', color: '#10B981' },
@@ -37,7 +36,7 @@ export default function DashboardPage() {
           {greeting}, Usuario
         </h1>
         <p className="welcome-subtitle">
-          Bienvenido de nuevo a tu panel de estudio personalizado
+          Bienvenido de nuevo a tu panel de estudio🫡
         </p>
       </div>
 

@@ -12,20 +12,25 @@ interface AdminSidebarProps {
   toggleSidebar: () => void;
 }
 
+interface NavItem {
+  name: string;
+  href: string;
+  icon: string;
+}
+
 export default function AdminSidebar({ isOpen, toggleSidebar }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
   
   const handleLinkClick = () => {
-    // En dispositivos móviles, cerrar el sidebar al hacer clic en un enlace
+    // En dispositivos se cierra sidebar al hacer clic en un enlace
     if (typeof window !== 'undefined' && window.innerWidth <= 768) {
       toggleSidebar();
     }
   };
 
-  // Define los elementos de navegación del admin
-  const navItems = [
+  const navItems: NavItem[] = [
     {
       name: 'Dashboard',
       href: '/admin',
@@ -55,22 +60,7 @@ export default function AdminSidebar({ isOpen, toggleSidebar }: AdminSidebarProp
       name: 'Objetivos de Estudio',
       href: '/admin/study-goals',
       icon: 'fas fa-bullseye',
-    },
-    {
-      name: 'Permisos',
-      href: '/admin/permissions',
-      icon: 'fas fa-shield-alt',
-    },
-    {
-      name: 'Documentos',
-      href: '/admin/documents',
-      icon: 'fas fa-file-alt',
-    },
-    {
-      name: 'Cuestionarios',
-      href: '/admin/quizzes',
-      icon: 'fas fa-question-circle',
-    },
+    }
   ];
 
   return (

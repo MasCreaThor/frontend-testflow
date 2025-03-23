@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/auth.store';
 import '@/styles/resetPassword.css';
 
-// Esquema de validación para el formulario de cambio de contraseña
+// Esquema de validacion
 const resetPasswordSchema = z.object({
   password: z
     .string()
@@ -55,7 +55,6 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     
     if (success) {
       setResetSuccess(true);
-      // Redirigir al login después de un breve retraso
       setTimeout(() => {
         router.push('/login');
       }, 3000);

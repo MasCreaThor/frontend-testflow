@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/auth.store';
 import '@/styles/auth.css';
 
-// Esquema de validación para el formulario de registro
+// Esquema de validación
 const registerSchema = z.object({
   firstName: z.string().min(1, 'El nombre es requerido'),
   lastName: z.string().min(1, 'El apellido es requerido'),

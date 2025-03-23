@@ -31,53 +31,22 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     try {
       setIsLoading(true);
-      // En una implementación real, esto obtendría datos del backend
       const response = await adminService.getUsers(currentPage, 10);
       
-      // Datos de muestra para desarrollo
-      const mockUsers: UserData[] = [
-        {
-          _id: '1',
-          email: 'admin@testflow.com',
-          createdAt: '2023-09-01T10:00:00.000Z',
-          lastLogin: '2023-09-15T08:30:00.000Z',
-          roles: ['admin']
-        },
-        {
-          _id: '2',
-          email: 'usuario1@testflow.com',
-          createdAt: '2023-09-02T11:20:00.000Z',
-          lastLogin: '2023-09-14T09:15:00.000Z',
-          roles: ['user']
-        },
-        {
-          _id: '3',
-          email: 'instructor@testflow.com',
-          createdAt: '2023-09-03T14:35:00.000Z',
-          lastLogin: '2023-09-12T16:45:00.000Z',
-          roles: ['instructor', 'user']
-        },
-        {
-          _id: '4',
-          email: 'usuario2@testflow.com',
-          createdAt: '2023-09-04T08:15:00.000Z',
-          roles: []
-        },
-        {
-          _id: '5',
-          email: 'contentmanager@testflow.com',
-          createdAt: '2023-09-05T09:30:00.000Z',
-          lastLogin: '2023-09-10T11:20:00.000Z',
-          roles: ['content-manager']
-        }
-      ];
+      // Procesar respuesta
+      if (response && response.users) {
+        setUsers(response.users);
+        setTotalPages(response.totalPages || 1);
+      } else {
+        setUsers(response || []);
+        setTotalPages(1);
+      }
       
-      setUsers(mockUsers);
-      setTotalPages(5); // Simular 5 páginas
       setError(null);
     } catch (err) {
       console.error('Error fetching users:', err);
       setError('Error al cargar los usuarios');
+      setUsers([]);
     } finally {
       setIsLoading(false);
     }
@@ -85,9 +54,7 @@ export default function UsersPage() {
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
-    // Implementar búsqueda
-    console.log('Buscando:', searchTerm);
-    // En una implementación real, llamaríamos a la API con el término de búsqueda
+    fetchUsers();
   };
 
   const handleSelectUser = (user: UserData) => {
@@ -126,7 +93,7 @@ export default function UsersPage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && users.length === 0) {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
@@ -171,68 +138,80 @@ export default function UsersPage() {
         </div>
       )}
 
-      <div className="users-table-container">
-        <table className="users-table">
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th>Fecha de Registro</th>
-              <th>Último Acceso</th>
-              <th>Roles</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(user => (
-              <tr key={user._id}>
-                <td>{user.email}</td>
-                <td>{formatDate(user.createdAt)}</td>
-                <td>{formatDate(user.lastLogin)}</td>
-                <td>
-                  <div className="roles-container">
-                    {user.roles.length > 0 ? user.roles.map(role => (
-                      <span key={role} className={`role-badge ${getRoleBadgeClass(role)}`}>
-                        {role}
-                      </span>
-                    )) : (
-                      <span className="no-roles">Sin roles</span>
-                    )}
-                  </div>
-                </td>
-                <td>
-                  <div className="table-actions">
-                    <button 
-                      className="action-button view" 
-                      onClick={() => handleSelectUser(user)}
-                      title="Ver detalles"
-                    >
-                      <i className="fas fa-eye"></i>
-                    </button>
-                    <button 
-                      className="action-button edit" 
-                      title="Editar usuario"
-                    >
-                      <i className="fas fa-edit"></i>
-                    </button>
-                    <button 
-                      className="action-button delete" 
-                      title="Eliminar usuario"
-                    >
-                      <i className="fas fa-trash-alt"></i>
-                    </button>
-                    <button 
-                      className="action-button roles" 
-                      title="Gestionar roles"
-                    >
-                      <i className="fas fa-user-tag"></i>
-                    </button>
-                  </div>
-                </td>
+      {users.length === 0 && !isLoading ? (
+        <div className="empty-state">
+          <div className="empty-icon">
+            <i className="fas fa-users"></i>
+          </div>
+          <h2 className="empty-title">No hay usuarios</h2>
+          <p className="empty-description">
+            No se encontraron usuarios con los criterios de búsqueda especificados.
+          </p>
+        </div>
+      ) : (
+        <div className="users-table-container">
+          <table className="users-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Fecha de Registro</th>
+                <th>Último Acceso</th>
+                <th>Roles</th>
+                <th>Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {users.map(user => (
+                <tr key={user._id}>
+                  <td>{user.email}</td>
+                  <td>{formatDate(user.createdAt)}</td>
+                  <td>{formatDate(user.lastLogin)}</td>
+                  <td>
+                    <div className="roles-container">
+                      {user.roles && user.roles.length > 0 ? user.roles.map(role => (
+                        <span key={role} className={`role-badge ${getRoleBadgeClass(role)}`}>
+                          {role}
+                        </span>
+                      )) : (
+                        <span className="no-roles">Sin roles</span>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="table-actions">
+                      <button 
+                        className="action-button view" 
+                        onClick={() => handleSelectUser(user)}
+                        title="Ver detalles"
+                      >
+                        <i className="fas fa-eye"></i>
+                      </button>
+                      <button 
+                        className="action-button edit" 
+                        title="Editar usuario"
+                      >
+                        <i className="fas fa-edit"></i>
+                      </button>
+                      <button 
+                        className="action-button delete" 
+                        title="Eliminar usuario"
+                      >
+                        <i className="fas fa-trash-alt"></i>
+                      </button>
+                      <button 
+                        className="action-button roles" 
+                        title="Gestionar roles"
+                      >
+                        <i className="fas fa-user-tag"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <div className="pagination">
         <button 
@@ -256,6 +235,7 @@ export default function UsersPage() {
         </button>
       </div>
 
+      {/* Modal para ver detalles del usuario */}
       {isModalOpen && selectedUser && (
         <div className="modal-overlay">
           <div className="user-details-modal">
@@ -285,7 +265,7 @@ export default function UsersPage() {
               <div className="user-detail">
                 <span className="detail-label">Roles:</span>
                 <div className="detail-value">
-                  {selectedUser.roles.length > 0 ? (
+                  {selectedUser.roles && selectedUser.roles.length > 0 ? (
                     <div className="modal-roles">
                       {selectedUser.roles.map(role => (
                         <span key={role} className={`role-badge ${getRoleBadgeClass(role)}`}>

@@ -1,12 +1,13 @@
-// src/app/admin/layout.tsx (actualizado)
+// src/app/admin/layout.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
 import useAuthStore from '@/store/auth.store';
 import useAdminStore from '@/store/admin.store';
+import AccessDenied from '@/components/common/AccessDenied';
 import '@/styles/admin/admin.css';
 
 export default function AdminLayout({
@@ -15,59 +16,84 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   const router = useRouter();
-  const { isAuthenticated, isLoading } = useAuthStore();
-  const { checkAdminAccess, hasAdminAccess, isLoading: isAdminLoading } = useAdminStore();
+  const pathname = usePathname();
+  const { isAuthenticated, isLoading: authLoading } = useAuthStore();
+  const { hasAdminAccess, isLoading: adminLoading, checkAdminAccess } = useAdminStore();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [adminCheckComplete, setAdminCheckComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [accessChecked, setAccessChecked] = useState(false);
 
-  // Verificar si el usuario está autenticado
+  // Verificar autenticación y permisos de admin
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/auth/login');
-    } else if (isAuthenticated) {
-      const verifyAdmin = async () => {
+    async function checkAccess() {
+      if (!authLoading) {
+
+        if (!isAuthenticated) {
+          router.push('/auth/login');
+          return;
+        }
+
         await checkAdminAccess();
-        setAdminCheckComplete(true);
-      };
-      verifyAdmin();
+        setAccessChecked(true);
+        setIsLoading(false);
+      }
     }
-  }, [isAuthenticated, isLoading, router, checkAdminAccess]);
 
-  // Verificar si el usuario tiene permisos de administrador
+    checkAccess();
+  }, [isAuthenticated, authLoading, router, checkAdminAccess]);
+
+
   useEffect(() => {
-    if (adminCheckComplete && !hasAdminAccess) {
-      console.log('Usuario no tiene permisos de administrador, redirigiendo...');
-      router.push('/dashboard');
-    }
-  }, [hasAdminAccess, adminCheckComplete, router]);
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
 
-  // Función para alternar el sidebar
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Si está cargando, mostrar spinner
-  if (isLoading || isAdminLoading) {
+  // Mientras se verifican los permisos, mostramos una pantallita de carga
+  if (isLoading || authLoading || adminLoading) {
     return (
       <div className="loading-screen">
         <div className="spinner"></div>
-        <p>Cargando panel administrativo...</p>
+        <p>Verificando acceso...</p>
       </div>
     );
   }
 
-  // Si no está autenticado o no tiene permisos, no mostrar nada
-  if (!isAuthenticated || (adminCheckComplete && !hasAdminAccess)) {
-    return null;
+  if (!hasAdminAccess && accessChecked) {
+    return <AccessDenied />;
   }
 
-  // Si está autenticado y tiene permisos, mostrar el layout
+  // Solo si paso la codicion anterior entra al admin
   return (
     <div className="admin-layout">
       <AdminSidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       
+      {/* Overlay para cerrar sidebar en móvil */}
+      {sidebarOpen && (
+        <div 
+          className="sidebar-overlay" 
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+      
       <div className={`admin-main ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-        <AdminHeader toggleSidebar={toggleSidebar} />
+        <AdminHeader toggleSidebar={toggleSidebar} currentPath={pathname} />
         <main className="admin-content">
           {children}
         </main>

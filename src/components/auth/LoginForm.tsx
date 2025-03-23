@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/auth.store';
 import '@/styles/login.css';
 
-// Esquema de validación para el formulario de login
+// esquema de validaciones
 const loginSchema = z.object({
   email: z.string().min(1, 'El email es requerido').email('Dirección de email inválida'),
   password: z.string().min(1, 'La contraseña es requerida'),
@@ -40,7 +40,7 @@ export default function LoginForm() {
     clearError();
     await login(data.email, data.password);
     
-    // Verificamos si el login fue exitoso antes de redirigir
+    // verificar login
     if (useAuthStore.getState().isAuthenticated) {
       router.push('/dashboard');
     }

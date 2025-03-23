@@ -12,7 +12,7 @@ export default function ProfilePage() {
   const { user } = useAuthStore();
   const { profile, isLoading, error, loadProfile } = useProfile();
 
-  // Cargar perfil del usuario al montar el componente
+  // Cargar perfil del usuario
   useEffect(() => {
     if (user?._id) {
       loadProfile();

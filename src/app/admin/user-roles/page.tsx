@@ -2,50 +2,17 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { adminService } from '@/services/admin.service';
+import { adminService, UserRoleData, RoleData } from '@/services/admin.service';
 import '@/styles/admin/admin-user-roles.css';
 
-interface RoleData {
-  _id: string;
-  name: string;
-  description?: string;
-  permissions?: string[];
-}
-
-interface UserData {
-  _id: string;
-  email: string;
-  createdAt?: string;
-  lastLogin?: string;
-  roles?: RoleData[];
-}
-
-interface UserRoleData {
-  _id: string;
-  userId: string;
-  roleId: string;
-  expiresAt?: string;
-  isActive?: boolean;
-  grantedBy?: string;
-  createdAt?: string;
-  user?: {
-    _id: string;
-    email: string;
-  };
-  role?: {
-    _id: string;
-    name: string;
-  };
-}
-
 export default function UserRolesPage() {
-  const [users, setUsers] = useState<UserData[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [roles, setRoles] = useState<RoleData[]>([]);
   const [userRoles, setUserRoles] = useState<UserRoleData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     userId: '',
@@ -53,7 +20,7 @@ export default function UserRolesPage() {
     expiresAt: ''
   });
 
-  // Fetch data on component mount
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -62,7 +29,7 @@ export default function UserRolesPage() {
     try {
       setIsLoading(true);
       
-      // Fetch users, roles, and user roles
+      // tra los usuarios, roles, y user roles
       const [usersData, rolesData, userRolesData] = await Promise.all([
         adminService.getUsers(),
         adminService.getRoles(),
@@ -77,95 +44,12 @@ export default function UserRolesPage() {
     } catch (err) {
       console.error('Error fetching data:', err);
       setError('Error al cargar los datos');
-      
-      // Sample data for development
-      const mockUsers: UserData[] = [
-        {
-          _id: '1',
-          email: 'admin@testflow.com',
-          createdAt: '2023-09-01T10:00:00.000Z',
-          lastLogin: '2023-09-15T08:30:00.000Z'
-        },
-        {
-          _id: '2',
-          email: 'usuario1@testflow.com',
-          createdAt: '2023-09-02T11:20:00.000Z',
-          lastLogin: '2023-09-14T09:15:00.000Z'
-        },
-        {
-          _id: '3',
-          email: 'instructor@testflow.com',
-          createdAt: '2023-09-03T14:35:00.000Z',
-          lastLogin: '2023-09-12T16:45:00.000Z'
-        }
-      ];
-      
-      const mockRoles: RoleData[] = [
-        {
-          _id: '1',
-          name: 'admin',
-          description: 'Acceso completo al sistema'
-        },
-        {
-          _id: '2',
-          name: 'user',
-          description: 'Usuario regular del sistema'
-        },
-        {
-          _id: '3',
-          name: 'instructor',
-          description: 'Instructor o profesor con acceso a funciones adicionales'
-        }
-      ];
-      
-      const mockUserRoles: UserRoleData[] = [
-        {
-          _id: '1',
-          userId: '1',
-          roleId: '1',
-          isActive: true,
-          createdAt: '2023-09-01T10:00:00.000Z',
-          user: { _id: '1', email: 'admin@testflow.com' },
-          role: { _id: '1', name: 'admin' }
-        },
-        {
-          _id: '2',
-          userId: '2',
-          roleId: '2',
-          isActive: true,
-          createdAt: '2023-09-02T11:20:00.000Z',
-          user: { _id: '2', email: 'usuario1@testflow.com' },
-          role: { _id: '2', name: 'user' }
-        },
-        {
-          _id: '3',
-          userId: '3',
-          roleId: '2',
-          isActive: true,
-          createdAt: '2023-09-03T14:35:00.000Z',
-          user: { _id: '3', email: 'instructor@testflow.com' },
-          role: { _id: '2', name: 'user' }
-        },
-        {
-          _id: '4',
-          userId: '3',
-          roleId: '3',
-          isActive: true,
-          createdAt: '2023-09-03T14:40:00.000Z',
-          user: { _id: '3', email: 'instructor@testflow.com' },
-          role: { _id: '3', name: 'instructor' }
-        }
-      ];
-      
-      setUsers(mockUsers);
-      setRoles(mockRoles);
-      setUserRoles(mockUserRoles);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Process users to add their roles
+  // procesar usuario al añadir roles
   const usersWithRoles = users.map(user => {
     const userRolesData = userRoles.filter(ur => 
       ur.userId === user._id && ur.isActive
@@ -182,23 +66,21 @@ export default function UserRolesPage() {
     };
   });
 
-  // Filter users based on search term
   const filteredUsers = usersWithRoles.filter(user => {
     if (!searchTerm) return true;
     
     const searchLower = searchTerm.toLowerCase();
     return (
       user.email.toLowerCase().includes(searchLower) ||
-      user.roles?.some(role => role.name.toLowerCase().includes(searchLower))
+      user.roles?.some((role: RoleData) => role.name.toLowerCase().includes(searchLower))
     );
   });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Search is already handled via state
   };
 
-  const handleOpenAssignRoleModal = (user: UserData) => {
+  const handleOpenAssignRoleModal = (user: any) => {
     setSelectedUser(user);
     setFormData({
       userId: user._id,
@@ -223,11 +105,11 @@ export default function UserRolesPage() {
     setIsLoading(true);
     
     try {
-      // Assign role to user
       const newUserRole = await adminService.assignRole(formData.userId, formData.roleId);
-      
-      // Update userRoles state
+
       setUserRoles(prev => [...prev, newUserRole]);
+      
+      fetchData();
       
       handleCloseModal();
       setError(null);
@@ -249,10 +131,13 @@ export default function UserRolesPage() {
     try {
       await adminService.removeRole(userId, roleId);
       
-      // Update userRoles state
+      // actualizar rol
       setUserRoles(prev => 
         prev.filter(ur => !(ur.userId === userId && ur.roleId === roleId && ur.isActive))
       );
+      
+      // refresaca para traer los roles actualizados
+      fetchData();
     } catch (err) {
       console.error('Error removing role:', err);
       setError('Error al eliminar el rol');
@@ -343,7 +228,7 @@ export default function UserRolesPage() {
                 <td>{formatDate(user.lastLogin)}</td>
                 <td>
                   <div className="roles-container">
-                    {user.roles && user.roles.length > 0 ? user.roles.map(role => (
+                    {user.roles && user.roles.length > 0 ? user.roles.map((role: RoleData) => (
                       <div className="role-item" key={role._id}>
                         <span className={`role-badge ${getRoleBadgeClass(role.name)}`}>
                           {role.name}
@@ -398,7 +283,7 @@ export default function UserRolesPage() {
                 <div className="current-roles">
                   <span className="info-label">Roles actuales:</span>
                   <div className="roles-list">
-                    {selectedUser.roles && selectedUser.roles.length > 0 ? selectedUser.roles.map(role => (
+                    {selectedUser.roles && selectedUser.roles.length > 0 ? selectedUser.roles.map((role: RoleData) => (
                       <span key={role._id} className={`role-badge ${getRoleBadgeClass(role.name)}`}>
                         {role.name}
                       </span>
@@ -423,9 +308,9 @@ export default function UserRolesPage() {
                       <option
                         key={role._id}
                         value={role._id}
-                        disabled={selectedUser.roles?.some(r => r._id === role._id)}
+                        disabled={selectedUser.roles?.some((r: RoleData) => r._id === role._id)}
                       >
-                        {role.name} {selectedUser.roles?.some(r => r._id === role._id) ? '(Ya asignado)' : ''}
+                        {role.name} {selectedUser.roles?.some((r: RoleData) => r._id === role._id) ? '(Ya asignado)' : ''}
                       </option>
                     ))}
                   </select>

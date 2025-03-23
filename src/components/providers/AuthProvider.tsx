@@ -23,7 +23,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   }, [initAuth]);
 
   if (!isInitialized) {
-    // Puedes mostrar un indicador de carga aquí si lo deseas
     return (
       <div className="loading-screen">
         <div className="spinner"></div>

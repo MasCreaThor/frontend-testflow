@@ -78,7 +78,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
             });
             return;
           } else {
-            // Token expirado, intentar refrescar si hay un refreshToken
+            // refrescar si hay un refreshToken
             const refreshToken = localStorage.getItem('refreshToken');
             if (refreshToken) {
               try {
@@ -87,15 +87,14 @@ const useAuthStore = create<AuthState>((set, get) => ({
                 if (response.refreshToken) {
                   localStorage.setItem('refreshToken', response.refreshToken);
                 }
-                
-                set({ 
+
+                set({
                   user: response.user,
                   isAuthenticated: true,
                   isLoading: false
                 });
                 return;
               } catch (error) {
-                // Error al refrescar el token, limpiar localStorage
                 AuthService.logout();
               }
             }
@@ -123,7 +122,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   
-  // Registrar nuevo usuario
   register: async (data: RegisterRequest) => {
     try {
       set({ isLoading: true, error: null });
@@ -143,7 +141,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   
-  // Solicitar correo para restablecer contraseña
   requestPasswordReset: async (data: ResetPasswordRequest) => {
     try {
       set({ isLoading: true, error: null });
@@ -159,7 +156,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   
-  // Restablecer contraseña con token
   resetPassword: async (data: SetNewPasswordRequest) => {
     try {
       set({ isLoading: true, error: null });
@@ -193,7 +189,6 @@ const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   
-  // Cerrar sesión
   logout: () => {
     AuthService.logout();
     set({ user: null, isAuthenticated: false });

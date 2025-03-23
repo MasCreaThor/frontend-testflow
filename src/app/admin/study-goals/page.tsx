@@ -2,28 +2,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { adminService } from '@/services/admin.service';
+import { adminService, StudyGoalData, CategoryData } from '@/services/admin.service';
 import '@/styles/admin/admin-study-goals.css';
-
-interface CategoryData {
-  _id: string;
-  name: string;
-}
-
-interface StudyGoalData {
-  _id: string;
-  name: string;
-  description?: string;
-  isActive?: boolean;
-  categoryId?: string;
-  category?: {
-    _id: string;
-    name: string;
-  };
-  createdAt?: string;
-  updatedAt?: string;
-  usersCount?: number;
-}
 
 export default function StudyGoalsPage() {
   const [studyGoals, setStudyGoals] = useState<StudyGoalData[]>([]);
@@ -41,92 +21,46 @@ export default function StudyGoalsPage() {
   });
   const [activeFilter, setActiveFilter] = useState<boolean | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string>('');
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+  const [goalsLoaded, setGoalsLoaded] = useState(false);
 
-  // Fetch study goals and categories on component mount
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
+    setIsLoading(true);
+    setError(null);
+    
     try {
-      setIsLoading(true);
+
+      try {
+        console.log('Solicitando categorías...');
+        const categoriesData = await adminService.getCategories();
+        console.log('Categorías recibidas:', categoriesData.length);
+        setCategories(categoriesData);
+        setCategoriesLoaded(true);
+      } catch (err) {
+        console.error('Error al cargar categorías:', err);
+        setError('Error al cargar las categorías. La página podría no funcionar correctamente.');
+        setCategories([]);
+      }
       
-      // Fetch categories first
-      const categoriesData = await adminService.getCategories();
-      setCategories(categoriesData);
-      
-      // Then fetch study goals
-      const goalsData = await adminService.getStudyGoals();
-      setStudyGoals(goalsData);
-      
-      setError(null);
+      try {
+        console.log('Solicitando objetivos de estudio...');
+        const goalsData = await adminService.getStudyGoals();
+        console.log('Objetivos de estudio recibidos:', goalsData?.length || 0);
+        setStudyGoals(goalsData || []);
+        setGoalsLoaded(true);
+      } catch (err) {
+        console.error('Error al cargar objetivos de estudio:', err);
+        setError('Error al cargar los objetivos de estudio.');
+        setStudyGoals([]);
+      }
     } catch (err) {
-      console.error('Error fetching data:', err);
-      setError('Error al cargar los datos');
-      
-      // Sample data for development
-      const mockCategories: CategoryData[] = [
-        { _id: '1', name: 'Matemáticas' },
-        { _id: '2', name: 'Física' },
-        { _id: '3', name: 'Programación' },
-        { _id: '4', name: 'Literatura' }
-      ];
-      
-      const mockStudyGoals: StudyGoalData[] = [
-        {
-          _id: '1',
-          name: 'Álgebra Lineal',
-          description: 'Matrices, vectores y transformaciones lineales',
-          isActive: true,
-          categoryId: '1',
-          category: { _id: '1', name: 'Matemáticas' },
-          createdAt: '2023-09-01T10:00:00.000Z',
-          usersCount: 24
-        },
-        {
-          _id: '2',
-          name: 'Cálculo Diferencial',
-          description: 'Límites, derivadas y aplicaciones',
-          isActive: true,
-          categoryId: '1',
-          category: { _id: '1', name: 'Matemáticas' },
-          createdAt: '2023-09-02T11:20:00.000Z',
-          usersCount: 31
-        },
-        {
-          _id: '3',
-          name: 'Mecánica Clásica',
-          description: 'Leyes de Newton y aplicaciones',
-          isActive: true,
-          categoryId: '2',
-          category: { _id: '2', name: 'Física' },
-          createdAt: '2023-09-03T14:35:00.000Z',
-          usersCount: 18
-        },
-        {
-          _id: '4',
-          name: 'JavaScript Básico',
-          description: 'Fundamentos del lenguaje JavaScript',
-          isActive: false,
-          categoryId: '3',
-          category: { _id: '3', name: 'Programación' },
-          createdAt: '2023-09-04T08:15:00.000Z',
-          usersCount: 42
-        },
-        {
-          _id: '5',
-          name: 'Literatura Contemporánea',
-          description: 'Análisis de obras literarias del siglo XX y XXI',
-          isActive: true,
-          categoryId: '4',
-          category: { _id: '4', name: 'Literatura' },
-          createdAt: '2023-09-05T09:30:00.000Z',
-          usersCount: 15
-        }
-      ];
-      
-      setCategories(mockCategories);
-      setStudyGoals(mockStudyGoals);
+      console.error('Error general en fetchData:', err);
+      setError('Error al cargar los datos. Por favor, intenta recargar la página.');
     } finally {
       setIsLoading(false);
     }
@@ -150,7 +84,7 @@ export default function StudyGoalsPage() {
       name: studyGoal.name,
       description: studyGoal.description || '',
       categoryId: studyGoal.categoryId || '',
-      isActive: studyGoal.isActive !== false // Default to true if undefined
+      isActive: studyGoal.isActive !== false
     });
     setIsModalOpen(true);
   };
@@ -174,22 +108,24 @@ export default function StudyGoalsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
     
     try {
       if (isCreateMode) {
-        // Create new study goal
         const newStudyGoal = await adminService.createStudyGoal(formData);
-        setStudyGoals(prev => [...prev, newStudyGoal]);
+        if (newStudyGoal) {
+          setStudyGoals(prev => [...prev, newStudyGoal]);
+        }
       } else if (selectedStudyGoal) {
-        // Update existing study goal
         const updatedStudyGoal = await adminService.updateStudyGoal(selectedStudyGoal._id, formData);
-        setStudyGoals(prev => 
-          prev.map(goal => goal._id === selectedStudyGoal._id ? updatedStudyGoal : goal)
-        );
+        if (updatedStudyGoal) {
+          setStudyGoals(prev => 
+            prev.map(goal => goal._id === selectedStudyGoal._id ? updatedStudyGoal : goal)
+          );
+        }
       }
       
       handleCloseModal();
-      setError(null);
     } catch (err) {
       console.error('Error saving study goal:', err);
       setError('Error al guardar el objetivo de estudio');
@@ -204,6 +140,7 @@ export default function StudyGoalsPage() {
     }
     
     setIsLoading(true);
+    setError(null);
     
     try {
       await adminService.deleteStudyGoal(studyGoalId);
@@ -241,11 +178,17 @@ export default function StudyGoalsPage() {
     });
   };
 
-  if (isLoading && studyGoals.length === 0) {
+  const getCategoryName = (categoryId?: string) => {
+    if (!categoryId) return 'Sin categoría';
+    const category = categories.find(cat => cat._id === categoryId);
+    return category ? category.name : 'Sin categoría';
+  };
+
+  if (isLoading && !categoriesLoaded && !goalsLoaded) {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
-        <p>Cargando objetivos de estudio...</p>
+        <p>Cargando datos...</p>
       </div>
     );
   }
@@ -258,6 +201,19 @@ export default function StudyGoalsPage() {
           Administra los objetivos de estudio disponibles para los estudiantes en la plataforma.
         </p>
       </div>
+
+      {error && (
+        <div className="error-alert">
+          <p>{error}</p>
+          <button 
+            onClick={() => fetchData()} 
+            className="reload-button"
+            style={{ marginTop: '10px', padding: '5px 10px', backgroundColor: '#4F46E5', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+          >
+            <i className="fas fa-sync-alt" style={{ marginRight: '5px' }}></i> Reintentar
+          </button>
+        </div>
+      )}
 
       <div className="study-goals-actions">
         <div className="filters">
@@ -302,30 +258,28 @@ export default function StudyGoalsPage() {
         </button>
       </div>
 
-      {error && (
-        <div className="error-alert">
-          <p>{error}</p>
-        </div>
-      )}
-
-      {filteredStudyGoals.length === 0 ? (
+      {(!isLoading && filteredStudyGoals.length === 0) ? (
         <div className="empty-state">
           <div className="empty-icon">
             <i className="fas fa-search"></i>
           </div>
           <h3 className="empty-title">No se encontraron objetivos de estudio</h3>
           <p className="empty-description">
-            No hay objetivos de estudio que coincidan con los filtros seleccionados.
+            {categoryFilter || activeFilter !== null
+              ? 'No hay objetivos de estudio que coincidan con los filtros seleccionados.'
+              : 'No hay objetivos de estudio definidos aún. Crea el primero con el botón "Nuevo Objetivo".'}
           </p>
-          <button 
-            className="empty-action"
-            onClick={() => {
-              setCategoryFilter('');
-              setActiveFilter(null);
-            }}
-          >
-            Limpiar filtros
-          </button>
+          {(categoryFilter || activeFilter !== null) && (
+            <button 
+              className="empty-action"
+              onClick={() => {
+                setCategoryFilter('');
+                setActiveFilter(null);
+              }}
+            >
+              Limpiar filtros
+            </button>
+          )}
         </div>
       ) : (
         <div className="study-goals-grid">
@@ -343,16 +297,10 @@ export default function StudyGoalsPage() {
               <div className="study-goal-category">
                 <span className="category-badge">
                   <i className="fas fa-tag"></i>
-                  {studyGoal.category?.name || 'Sin categoría'}
+                  {studyGoal.category ? studyGoal.category.name : getCategoryName(studyGoal.categoryId)}
                 </span>
               </div>
               <div className="study-goal-meta">
-                <div className="study-goal-stats">
-                  <span className="stats-item">
-                    <i className="fas fa-users"></i>
-                    {studyGoal.usersCount || 0} estudiantes
-                  </span>
-                </div>
                 <div className="study-goal-dates">
                   <span className="date-item">
                     <i className="fas fa-calendar-alt"></i>
@@ -436,9 +384,6 @@ export default function StudyGoalsPage() {
                       </option>
                     ))}
                   </select>
-                  <p className="help-text">
-                    Selecciona la categoría a la que pertenece este objetivo de estudio.
-                  </p>
                 </div>
                 
                 <div className="form-group checkbox-group">

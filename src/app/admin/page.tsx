@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { adminService } from '@/services/admin.service';
 import '@/styles/admin/admin-dashboard.css';
 
@@ -13,6 +12,13 @@ type AdminStats = {
   roles: number;
 };
 
+type ActivityItem = {
+  id: string;
+  text: string;
+  time: string;
+  type: 'user' | 'document' | 'role';
+};
+
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<AdminStats>({
     users: 0,
@@ -20,6 +26,7 @@ export default function AdminDashboardPage() {
     quizzes: 0,
     roles: 0
   });
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,19 +34,43 @@ export default function AdminDashboardPage() {
     const fetchStats = async () => {
       try {
         setIsLoading(true);
-        // En una implementación real, esto obtendría datos del backend
         const data = await adminService.getStats();
         setStats(data);
+        
+        // Simulamos datos de actividad para el apartado de recientes (Implementar logica correspondiente para quitar este ejemplo)
+
+        setActivities([
+          {
+            id: '1',
+            text: 'Nuevo usuario registrado',
+            time: 'Hace 2 horas',
+            type: 'user'
+          },
+          {
+            id: '2',
+            text: 'Documento subido',
+            time: 'Hace 4 horas',
+            type: 'document'
+          },
+          {
+            id: '3',
+            text: 'Rol asignado a usuario',
+            time: 'Ayer',
+            type: 'role'
+          }
+        ]);
+        
         setError(null);
       } catch (err) {
         console.error('Error fetching admin stats:', err);
         setError('No se pudieron cargar las estadísticas');
-        // Usar datos de muestra por ahora
+        
+        // Datos de respaldo por ya que nos falta implementarlos en la parte del backend
         setStats({
-          users: 43,
-          documents: 128,
-          quizzes: 56,
-          roles: 4
+          users: 0,
+          documents: 0,
+          quizzes: 0,
+          roles: 0
         });
       } finally {
         setIsLoading(false);
@@ -48,6 +79,20 @@ export default function AdminDashboardPage() {
 
     fetchStats();
   }, []);
+
+  // Obtener el icono según el tipo de actividad
+  const getActivityIcon = (type: string): string => {
+    switch (type) {
+      case 'user':
+        return 'fas fa-user-plus';
+      case 'document':
+        return 'fas fa-file-upload';
+      case 'role':
+        return 'fas fa-user-shield';
+      default:
+        return 'fas fa-bell';
+    }
+  };
 
   if (isLoading) {
     return (
@@ -74,50 +119,29 @@ export default function AdminDashboardPage() {
       )}
 
       <div className="stats-grid">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Usuarios</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.users}</div>
-            <p className="text-xs text-muted-foreground">
-              Usuarios registrados en el sistema
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Documentos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.documents}</div>
-            <p className="text-xs text-muted-foreground">
-              Documentos subidos por usuarios
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Cuestionarios</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.quizzes}</div>
-            <p className="text-xs text-muted-foreground">
-              Cuestionarios generados
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Roles</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.roles}</div>
-            <p className="text-xs text-muted-foreground">
-              Roles definidos en el sistema
-            </p>
-          </CardContent>
-        </Card>
+        <div className="stat-card">
+          <h3 className="stat-title">Total Usuarios</h3>
+          <div className="stat-value">{stats.users}</div>
+          <p className="stat-description">Usuarios registrados en el sistema</p>
+        </div>
+        
+        <div className="stat-card">
+          <h3 className="stat-title">Documentos</h3>
+          <div className="stat-value">{stats.documents}</div>
+          <p className="stat-description">Documentos subidos por usuarios</p>
+        </div>
+        
+        <div className="stat-card">
+          <h3 className="stat-title">Cuestionarios</h3>
+          <div className="stat-value">{stats.quizzes}</div>
+          <p className="stat-description">Cuestionarios generados</p>
+        </div>
+        
+        <div className="stat-card">
+          <h3 className="stat-title">Roles</h3>
+          <div className="stat-value">{stats.roles}</div>
+          <p className="stat-description">Roles definidos en el sistema</p>
+        </div>
       </div>
 
       <div className="admin-sections">
@@ -125,33 +149,21 @@ export default function AdminDashboardPage() {
           <h2 className="section-title">Actividad Reciente</h2>
           <div className="section-content">
             <div className="activity-list">
-              <div className="activity-item">
-                <div className="activity-icon">
-                  <i className="fas fa-user-plus"></i>
-                </div>
-                <div className="activity-content">
-                  <p className="activity-text">Nuevo usuario registrado: <span>usuario@ejemplo.com</span></p>
-                  <p className="activity-time">Hace 2 horas</p>
-                </div>
-              </div>
-              <div className="activity-item">
-                <div className="activity-icon">
-                  <i className="fas fa-file-upload"></i>
-                </div>
-                <div className="activity-content">
-                  <p className="activity-text">Documento subido: <span>Material de estudio</span></p>
-                  <p className="activity-time">Hace 4 horas</p>
-                </div>
-              </div>
-              <div className="activity-item">
-                <div className="activity-icon">
-                  <i className="fas fa-user-shield"></i>
-                </div>
-                <div className="activity-content">
-                  <p className="activity-text">Rol asignado a usuario: <span>admin@testflow.com</span></p>
-                  <p className="activity-time">Ayer</p>
-                </div>
-              </div>
+              {activities.length > 0 ? (
+                activities.map((activity) => (
+                  <div className="activity-item" key={activity.id}>
+                    <div className="activity-icon">
+                      <i className={getActivityIcon(activity.type)}></i>
+                    </div>
+                    <div className="activity-content">
+                      <p className="activity-text">{activity.text}</p>
+                      <p className="activity-time">{activity.time}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="no-activity">No hay actividad reciente</p>
+              )}
             </div>
           </div>
         </div>
@@ -160,21 +172,33 @@ export default function AdminDashboardPage() {
           <h2 className="section-title">Acciones Rápidas</h2>
           <div className="section-content">
             <div className="quick-actions">
-              <button className="action-button">
+              <button 
+                className="action-button" 
+                onClick={() => window.location.href = '/admin/users'}
+              >
                 <i className="fas fa-user-plus"></i>
-                <span>Crear Usuario</span>
+                <span>Usuarios</span>
               </button>
-              <button className="action-button">
+              <button 
+                className="action-button"
+                onClick={() => window.location.href = '/admin/user-roles'}
+              >
                 <i className="fas fa-user-tag"></i>
                 <span>Asignar Rol</span>
               </button>
-              <button className="action-button">
+              <button 
+                className="action-button"
+                onClick={() => window.location.href = '/admin/roles'}
+              >
                 <i className="fas fa-shield-alt"></i>
-                <span>Gestionar Permisos</span>
+                <span>Roles</span>
               </button>
-              <button className="action-button">
-                <i className="fas fa-cog"></i>
-                <span>Configuración</span>
+              <button 
+                className="action-button"
+                onClick={() => window.location.href = '/admin/categories'}
+              >
+                <i className="fas fa-list"></i>
+                <span>Categorías</span>
               </button>
             </div>
           </div>

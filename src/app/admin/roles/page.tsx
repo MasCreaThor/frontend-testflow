@@ -2,18 +2,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { adminService } from '@/services/admin.service';
+import { adminService, RoleData } from '@/services/admin.service';
 import '@/styles/admin/admin-roles.css';
-
-interface RoleData {
-  _id: string;
-  name: string;
-  description?: string;
-  permissions: string[];
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
 
 export default function RolesPage() {
   const [roles, setRoles] = useState<RoleData[]>([]);
@@ -22,6 +12,12 @@ export default function RolesPage() {
   const [selectedRole, setSelectedRole] = useState<RoleData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    permissions: [] as string[],
+    isActive: true
+  });
 
   // Cargar roles al iniciar
   useEffect(() => {
@@ -31,49 +27,8 @@ export default function RolesPage() {
   const fetchRoles = async () => {
     try {
       setIsLoading(true);
-      // En una implementación real, esto obtendría datos del backend
-      
-      // Datos de muestra para desarrollo
-      const mockRoles: RoleData[] = [
-        {
-          _id: '1',
-          name: 'admin',
-          description: 'Acceso completo al sistema',
-          permissions: ['admin:access', 'users:*', 'roles:*', 'permissions:*', 'documents:*', 'categories:*', 'quizzes:*'],
-          isActive: true,
-          createdAt: '2023-09-01T10:00:00.000Z',
-          updatedAt: '2023-09-01T10:00:00.000Z'
-        },
-        {
-          _id: '2',
-          name: 'user',
-          description: 'Usuario regular del sistema',
-          permissions: ['documents:create', 'documents:read', 'documents:update', 'documents:delete', 'quizzes:create', 'quizzes:read'],
-          isActive: true,
-          createdAt: '2023-09-01T10:00:00.000Z',
-          updatedAt: '2023-09-01T10:00:00.000Z'
-        },
-        {
-          _id: '3',
-          name: 'instructor',
-          description: 'Instructor o profesor con acceso a funciones adicionales',
-          permissions: ['documents:*', 'quizzes:*', 'categories:read', 'categories:create'],
-          isActive: true,
-          createdAt: '2023-09-01T10:00:00.000Z',
-          updatedAt: '2023-09-01T10:00:00.000Z'
-        },
-        {
-          _id: '4',
-          name: 'content-manager',
-          description: 'Gestor de contenido educativo',
-          permissions: ['categories:*', 'documents:read', 'quizzes:read'],
-          isActive: true,
-          createdAt: '2023-09-01T10:00:00.000Z',
-          updatedAt: '2023-09-01T10:00:00.000Z'
-        }
-      ];
-      
-      setRoles(mockRoles);
+      const data = await adminService.getRoles();
+      setRoles(data);
       setError(null);
     } catch (err) {
       console.error('Error fetching roles:', err);
@@ -93,6 +48,17 @@ export default function RolesPage() {
     setIsPermissionModalOpen(true);
   };
 
+  const handleOpenCreateModal = () => {
+    setSelectedRole(null);
+    setFormData({
+      name: '',
+      description: '',
+      permissions: [],
+      isActive: true
+    });
+    setIsModalOpen(true);
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedRole(null);
@@ -100,6 +66,24 @@ export default function RolesPage() {
 
   const handleClosePermissionModal = () => {
     setIsPermissionModalOpen(false);
+    setSelectedRole(null);
+  };
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' 
+        ? (e.target as HTMLInputElement).checked 
+        : value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Lógica para guardar rol (crear o actualizar)
+    handleCloseModal();
   };
 
   const formatDate = (dateString?: string) => {
@@ -118,7 +102,7 @@ export default function RolesPage() {
     return `${permissions.length} permisos`;
   };
 
-  if (isLoading) {
+  if (isLoading && roles.length === 0) {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
@@ -137,7 +121,7 @@ export default function RolesPage() {
       </div>
 
       <div className="roles-actions">
-        <button className="create-button">
+        <button className="create-button" onClick={handleOpenCreateModal}>
           <i className="fas fa-plus-circle"></i>
           Crear Nuevo Rol
         </button>
@@ -301,78 +285,30 @@ export default function RolesPage() {
                 </div>
               </div>
               
+              {/* Grupos de permisos (simplificados para este ejemplo) */}
               <div className="permissions-groups">
                 <div className="permission-group">
                   <div className="group-header">
                     <label className="group-checkbox">
-                      <input 
-                        type="checkbox" 
-                        checked={true} 
-                      />
+                      <input type="checkbox" />
                       <span className="group-name">Usuarios</span>
                     </label>
                     <span className="group-count">5 permisos</span>
                   </div>
                   <div className="group-permissions">
+                    {/* Permisos individuales dentro del grupo */}
                     <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
+                      <input type="checkbox" />
                       <span className="permission-name">users:create</span>
                     </label>
                     <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
+                      <input type="checkbox" />
                       <span className="permission-name">users:read</span>
                     </label>
-                    <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
-                      <span className="permission-name">users:update</span>
-                    </label>
-                    <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
-                      <span className="permission-name">users:delete</span>
-                    </label>
-                    <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
-                      <span className="permission-name">users:list</span>
-                    </label>
+                    {/* Más permisos... */}
                   </div>
                 </div>
-                
-                <div className="permission-group">
-                  <div className="group-header">
-                    <label className="group-checkbox">
-                      <input 
-                        type="checkbox" 
-                        checked={true} 
-                      />
-                      <span className="group-name">Roles</span>
-                    </label>
-                    <span className="group-count">5 permisos</span>
-                  </div>
-                  <div className="group-permissions">
-                    <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
-                      <span className="permission-name">roles:create</span>
-                    </label>
-                    <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
-                      <span className="permission-name">roles:read</span>
-                    </label>
-                    <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
-                      <span className="permission-name">roles:update</span>
-                    </label>
-                    <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
-                      <span className="permission-name">roles:delete</span>
-                    </label>
-                    <label className="permission-checkbox">
-                      <input type="checkbox" checked={true} />
-                      <span className="permission-name">roles:list</span>
-                    </label>
-                  </div>
-                </div>
-                
-                {/* Más grupos de permisos aquí */}
+                {/* Más grupos de permisos... */}
               </div>
             </div>
             <div className="modal-footer">

@@ -30,7 +30,7 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ readOnly = false }) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       await uploadUserProfileImage(file);
-      // Limpiar el input para permitir recargar el mismo archivo
+
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }

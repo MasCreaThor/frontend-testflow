@@ -1,7 +1,7 @@
 // src/lib/validations.ts
 import { z } from 'zod';
 
-// Esquema para validar solicitud de restablecimiento de contraseña
+// Esquemas de validadciones
 export const resetPasswordRequestSchema = z.object({
   email: z
     .string()
@@ -9,7 +9,7 @@ export const resetPasswordRequestSchema = z.object({
     .email({ message: 'Ingresa un correo electrónico válido' })
 });
 
-// Esquema para validar establecimiento de nueva contraseña
+
 export const resetPasswordSchema = z.object({
   password: z
     .string()
@@ -23,6 +23,6 @@ export const resetPasswordSchema = z.object({
   path: ['confirmPassword'],
 });
 
-// Tipos inferidos para usar con react-hook-form
+
 export type ResetPasswordRequestFormValues = z.infer<typeof resetPasswordRequestSchema>;
 export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;

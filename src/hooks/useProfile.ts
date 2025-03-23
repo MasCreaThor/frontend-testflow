@@ -6,9 +6,9 @@ import { UpdateProfileRequest } from '@/types/auth.types';
 
 export function useProfile() {
   const { user } = useAuthStore();
-  const { 
-    profile, 
-    isLoading, 
+  const {
+    profile,
+    isLoading,
     error,
     fetchProfile,
     updateProfile,
@@ -36,7 +36,7 @@ export function useProfile() {
     if (!profile?._id) {
       return false;
     }
-    
+
     clearError();
     return await uploadProfileImage(profile._id, file);
   }, [profile, uploadProfileImage, clearError]);
@@ -45,7 +45,7 @@ export function useProfile() {
     if (!profile?._id) {
       return false;
     }
-    
+
     clearError();
     return await deleteProfileImage(profile._id);
   }, [profile, deleteProfileImage, clearError]);

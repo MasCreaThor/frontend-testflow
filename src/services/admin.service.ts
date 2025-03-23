@@ -22,15 +22,23 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Datos de prueba para desarrollo
-const mockData = {
-  stats: {
-    users: 43,
-    documents: 128,
-    quizzes: 56,
-    roles: 4
+// Interceptor para depurar respuestas y errores
+api.interceptors.response.use(
+  (response) => {
+    // Depurar respuestas exitosas
+    console.log(`Respuesta exitosa de ${response.config.url}:`, response.status);
+    return response;
+  },
+  (error) => {
+    // Depurar errores
+    console.error(`Error en solicitud a ${error.config?.url || 'unknown endpoint'}:`, {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    return Promise.reject(error);
   }
-};
+);
 
 // Interfaces
 export interface AdminStats {
@@ -76,18 +84,50 @@ export interface CreateStudyGoalDto {
   isActive?: boolean;
 }
 
+export interface RoleData {
+  _id: string;
+  name: string;
+  description?: string;
+  permissions: string[];
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface UserData {
+  _id: string;
+  email: string;
+  createdAt?: string;
+  lastLogin?: string;
+  roles?: RoleData[];
+}
+
+export interface UserRoleData {
+  _id: string;
+  userId: string;
+  roleId: string;
+  expiresAt?: string;
+  isActive?: boolean;
+  grantedBy?: string;
+  createdAt?: string;
+  user?: {
+    _id: string;
+    email: string;
+  };
+  role?: {
+    _id: string;
+    name: string;
+  };
+}
+
 export const adminService = {
   /**
    * Verifica si el usuario actual tiene permisos de administrador
    */
   checkAdminAccess: async (): Promise<boolean> => {
     try {
-      // Para desarrollo, siempre permitimos acceso mientras implementamos la API
-      return true;
-      
-      // Cuando la API esté lista, descomentar el siguiente código:
-      // const response = await api.get('/user-roles/check-admin');
-      // return response.data.hasAccess;
+      const response = await api.get('/admin-check');
+      return response.data.hasAccess;
     } catch (error) {
       // En caso de error, asumimos que no hay acceso
       console.error('Error verificando permisos de administrador:', error);
@@ -100,13 +140,17 @@ export const adminService = {
    */
   getStats: async (): Promise<AdminStats> => {
     try {
-      // Intentamos obtener datos reales del backend
       const response = await api.get('/admin/stats');
       return response.data;
     } catch (error) {
-      // Si falla, usamos datos de prueba para desarrollo
-      console.info('Usando datos de prueba para estadísticas de administrador');
-      return mockData.stats;
+      console.error('Error obteniendo estadísticas:', error);
+      // Devolver datos de respaldo en caso de error
+      return {
+        users: 0,
+        documents: 0,
+        quizzes: 0,
+        roles: 0
+      };
     }
   },
 
@@ -118,25 +162,34 @@ export const adminService = {
       const response = await api.get(`/users?page=${page}&limit=${limit}`);
       return response.data;
     } catch (error) {
-      console.info('Usando datos de prueba para listado de usuarios');
-      // Aquí podrías implementar datos de prueba para usuarios
-      return {
-        users: [],
-        totalPages: 0
-      };
+      console.error('Error obteniendo usuarios:', error);
+      // Devolver un array vacío para que la aplicación no se rompa
+      return { users: [], totalPages: 1 };
     }
   },
 
   /**
    * Obtiene listado de roles para administración
    */
-  getRoles: async (): Promise<any> => {
+  getRoles: async (): Promise<RoleData[]> => {
     try {
       const response = await api.get('/roles');
       return response.data;
     } catch (error) {
-      console.info('Usando datos de prueba para roles');
-      // Implementar datos de prueba para roles si es necesario
+      console.error('Error obteniendo roles:', error);
+      return [];
+    }
+  },
+
+  /**
+   * Obtiene el listado de asignaciones de roles a usuarios
+   */
+  getUserRoles: async (): Promise<UserRoleData[]> => {
+    try {
+      const response = await api.get('/user-roles');
+      return response.data;
+    } catch (error) {
+      console.error('Error obteniendo roles de usuarios:', error);
       return [];
     }
   },
@@ -149,8 +202,7 @@ export const adminService = {
       const response = await api.get('/permissions');
       return response.data;
     } catch (error) {
-      console.info('Usando datos de prueba para permisos');
-      // Implementar datos de prueba para permisos si es necesario
+      console.error('Error obteniendo permisos:', error);
       return [];
     }
   },
@@ -193,20 +245,7 @@ export const adminService = {
       return response.data;
     } catch (error) {
       console.error('Error obteniendo categorías:', error);
-      throw new Error('No se pudieron obtener las categorías');
-    }
-  },
-
-  /**
-   * Obtiene detalles de una categoría
-   */
-  getCategoryById: async (categoryId: string): Promise<CategoryData> => {
-    try {
-      const response = await api.get(`/categories/${categoryId}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error obteniendo categoría:', error);
-      throw new Error('No se pudo obtener la categoría');
+      return [];
     }
   },
 
@@ -253,37 +292,19 @@ export const adminService = {
    */
   getStudyGoals: async (): Promise<StudyGoalData[]> => {
     try {
+      console.log('Solicitando objetivos de estudio...');
       const response = await api.get('/study-goals');
+      console.log('Respuesta de objetivos de estudio:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error obteniendo objetivos de estudio:', error);
-      throw new Error('No se pudieron obtener los objetivos de estudio');
-    }
-  },
-
-  /**
-   * Obtiene objetivos de estudio por categoría
-   */
-  getStudyGoalsByCategory: async (categoryId: string): Promise<StudyGoalData[]> => {
-    try {
-      const response = await api.get(`/study-goals/category/${categoryId}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error obteniendo objetivos por categoría:', error);
-      throw new Error('No se pudieron obtener los objetivos de la categoría');
-    }
-  },
-
-  /**
-   * Obtiene detalles de un objetivo de estudio
-   */
-  getStudyGoalById: async (goalId: string): Promise<StudyGoalData> => {
-    try {
-      const response = await api.get(`/study-goals/${goalId}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error obteniendo objetivo de estudio:', error);
-      throw new Error('No se pudo obtener el objetivo de estudio');
+      console.error('Error detallado obteniendo objetivos de estudio:', error);
+      if (axios.isAxiosError(error)) {
+        // Verificar si hay un error específico del backend
+        const errorMessage = error.response?.data?.message || 'Error desconocido';
+        console.error('Mensaje de error del servidor:', errorMessage);
+      }
+      // Devolver un array vacío para evitar que la aplicación se rompa
+      return [];
     }
   },
 
