@@ -24,22 +24,20 @@ export function useAuth() {
   const login = useCallback(async (email: string, password: string) => {
     clearError();
     await loginStore(email, password);
-    
-    // Si la autenticación fue exitosa, redirigir al dashboard
+
     if (useAuthStore.getState().isAuthenticated) {
       router.push('/dashboard');
     }
   }, [loginStore, router, clearError]);
 
-  // Añadimos el tipo correcto para el parámetro data
   const register = useCallback(async (data: RegisterRequest) => {
     clearError();
     const success = await registerStore(data);
-    
+
     if (success) {
       router.push('/dashboard');
     }
-    
+
     return success;
   }, [registerStore, router, clearError]);
 

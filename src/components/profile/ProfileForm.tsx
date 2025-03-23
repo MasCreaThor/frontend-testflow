@@ -7,7 +7,7 @@ import useProfile from '@/hooks/useProfile';
 import ProfileImage from './ProfileImage';
 import '@/styles/profile.css';
 
-// Esquema de validación para el formulario de perfil
+// Esquema de validación
 const profileSchema = z.object({
   firstName: z.string().min(1, 'El nombre es requerido'),
   lastName: z.string().min(1, 'El apellido es requerido'),
@@ -32,7 +32,6 @@ const ProfileForm: React.FC = () => {
     }
   });
 
-  // Actualizar el formulario cuando se carga el perfil
   useEffect(() => {
     if (profile) {
       reset({
@@ -50,7 +49,6 @@ const ProfileForm: React.FC = () => {
     
     if (success) {
       setUpdateSuccess(true);
-      // Ocultar mensaje de éxito después de 3 segundos
       setTimeout(() => {
         setUpdateSuccess(false);
       }, 3000);

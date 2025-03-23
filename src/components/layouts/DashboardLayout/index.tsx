@@ -29,7 +29,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     // Comprobar al cargar
     checkIfMobile();
     
-    // Comprobar al cambiar el tamaño de la ventana
     window.addEventListener('resize', checkIfMobile);
     
     return () => {

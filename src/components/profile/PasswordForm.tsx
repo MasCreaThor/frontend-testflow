@@ -9,7 +9,7 @@ import '@/styles/profile.css';
 // Configuración base para axios
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-// Esquema de validación para el cambio de contraseña
+// Esquema de validación
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, 'La contraseña actual es requerida'),
   newPassword: z.string().min(6, 'La nueva contraseña debe tener al menos 6 caracteres'),
@@ -67,11 +67,9 @@ const PasswordForm: React.FC = () => {
       
       setDebugInfo(prev => `${prev || ''}\nRespuesta: ${JSON.stringify(response.data)}`);
       
-      // Éxito - limpiar formulario
       reset();
       setUpdateSuccess(true);
       
-      // Ocultar mensaje de éxito después de 3 segundos
       setTimeout(() => {
         setUpdateSuccess(false);
       }, 3000);

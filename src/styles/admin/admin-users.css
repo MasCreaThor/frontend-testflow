@@ -1,0 +1,444 @@
+/* src/styles/admin/admin-users.css */
+/* Estilos para la página de gestión de usuarios */
+
+.admin-users {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* Acciones superiores */
+  .users-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .search-form {
+    display: flex;
+    max-width: 500px;
+    flex: 1;
+  }
+  
+  .search-input-container {
+    position: relative;
+    flex: 1;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem 0 0 0.375rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+  }
+  
+  .search-button {
+    padding: 0.625rem 1rem;
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 0 0.375rem 0.375rem 0;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .search-button:hover {
+    background-color: #4f46e5;
+  }
+  
+  .create-button {
+    display: flex;
+    align-items: center;
+    padding: 0.625rem 1rem;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .create-button i {
+    margin-right: 0.5rem;
+  }
+  
+  .create-button:hover {
+    background-color: #059669;
+  }
+  
+  /* Tabla de usuarios */
+  .users-table-container {
+    overflow-x: auto;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+  }
+  
+  .users-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .users-table th,
+  .users-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .users-table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+    font-size: 0.875rem;
+  }
+  
+  .users-table tr:hover {
+    background-color: #f8fafc;
+  }
+  
+  .roles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .role-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .role-badge-admin {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  .role-badge-instructor {
+    background-color: #e0e7ff;
+    color: #4338ca;
+  }
+  
+  .role-badge-content {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+  
+  .role-badge-user {
+    background-color: #e5e7eb;
+    color: #374151;
+  }
+  
+  .no-roles {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-style: italic;
+  }
+  
+  .table-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .action-button {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+  }
+  
+  .action-button.view {
+    background-color: #e0f2fe;
+    color: #0284c7;
+  }
+  
+  .action-button.edit {
+    background-color: #fef3c7;
+    color: #b45309;
+  }
+  
+  .action-button.delete {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  .action-button.roles {
+    background-color: #e0e7ff;
+    color: #4338ca;
+  }
+  
+  .action-button.view:hover {
+    background-color: #0284c7;
+    color: white;
+  }
+  
+  .action-button.edit:hover {
+    background-color: #b45309;
+    color: white;
+  }
+  
+  .action-button.delete:hover {
+    background-color: #b91c1c;
+    color: white;
+  }
+  
+  .action-button.roles:hover {
+    background-color: #4338ca;
+    color: white;
+  }
+  
+  /* Paginación */
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+  }
+  
+  .pagination-button {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .pagination-button:hover:not(:disabled) {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+  }
+  
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .pagination-button i {
+    font-size: 0.75rem;
+  }
+  
+  .pagination-button i:first-child {
+    margin-right: 0.5rem;
+  }
+  
+  .pagination-button i:last-child {
+    margin-left: 0.5rem;
+  }
+  
+  .pagination-info {
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+  
+  /* Modal de detalles de usuario */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  .user-details-modal {
+    width: 100%;
+    max-width: 600px;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    animation: modalShow 0.3s ease-out;
+  }
+  
+  @keyframes modalShow {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+  }
+  
+  .close-button:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+  }
+  
+  .user-detail {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .detail-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+  }
+  
+  .detail-value {
+    color: #1e293b;
+  }
+  
+  .modal-roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    gap: 1rem;
+  }
+  
+  .secondary-button {
+    padding: 0.625rem 1rem;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .secondary-button:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+  }
+  
+  .primary-button {
+    display: flex;
+    align-items: center;
+    padding: 0.625rem 1rem;
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .primary-button i {
+    margin-right: 0.5rem;
+  }
+  
+  .primary-button:hover {
+    background-color: #4f46e5;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .users-actions {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+    }
+    
+    .search-form {
+      max-width: none;
+    }
+    
+    .users-table th,
+    .users-table td {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.85rem;
+    }
+    
+    .role-badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.4rem;
+    }
+    
+    .action-button {
+      width: 1.8rem;
+      height: 1.8rem;
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .table-actions {
+      flex-wrap: wrap;
+    }
+  }

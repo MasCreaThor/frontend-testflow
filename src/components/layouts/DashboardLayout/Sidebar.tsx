@@ -20,13 +20,11 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
   
   const handleLinkClick = () => {
-    // En dispositivos móviles, cerrar el sidebar al hacer clic en un enlace
     if (isMobile) {
       toggleSidebar();
     }
   };
 
-  // Define los elementos de navegación
   const navItems = [
     {
       name: 'Dashboard',

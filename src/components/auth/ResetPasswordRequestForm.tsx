@@ -9,7 +9,7 @@ import Link from 'next/link';
 import useAuthStore from '@/store/auth.store';
 import '@/styles/resetPassword.css';
 
-// Esquema de validación para el formulario de solicitud de reset
+// Esquema de validación
 const resetRequestSchema = z.object({
   email: z.string().min(1, 'El email es requerido').email('Dirección de email inválida')
 });
