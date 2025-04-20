@@ -1,20 +1,27 @@
+import { Bell, Menu, Moon, Search, Sun, User } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react';
-import { Menu, Search, Bell, User } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface HeaderProps {
   toggleSidebar?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle('dark');
+  };
+
   return (
-    <header className="bg-white shadow-sm p-4 rounded-lg mb-4 flex items-center justify-between">
+    <header className={`${isDarkMode ? 'bg-gray-800 text-white' : 'bg-blue-50'} shadow-sm p-4 rounded-lg mb-4 flex items-center justify-between transition-colors duration-200`}>
       {/* Lado izquierdo */}
       <div className="flex items-center space-x-4">
         {toggleSidebar && (
           <button 
             onClick={toggleSidebar}
-            className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-indigo-600 transition-colors"
+            className={`p-2 rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-100'} hover:text-indigo-600 transition-colors`}
             aria-label="Toggle sidebar"
           >
             <Menu size={20} />
@@ -35,9 +42,9 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           <input
             type="text"
             placeholder="Buscar..."
-            className="w-full py-2 pl-10 pr-4 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+            className={`w-full py-2 pl-10 pr-4 rounded-lg border ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-200'} focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent`}
           />
-          <div className="absolute left-3 top-2.5 text-gray-400">
+          <div className={`absolute left-3 top-2.5 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`}>
             <Search size={18} />
           </div>
         </div>
@@ -45,7 +52,15 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
       
       {/* Lado derecho */}
       <div className="flex items-center space-x-3">
-        <button className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-indigo-600 transition-colors relative">
+        <button 
+          onClick={toggleTheme}
+          className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition-colors relative`}
+          aria-label={isDarkMode ? 'Activar modo claro' : 'Activar modo oscuro'}
+        >
+          {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+
+        <button className={`p-2 rounded-full ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'} transition-colors relative`}>
           <Bell size={20} />
           <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
@@ -57,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         </div>
         
         <div className="hidden sm:flex space-x-2">
-          <button className="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 hover:bg-gray-200 font-medium transition-colors">
+          <button className={`px-4 py-2 rounded-lg ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'} font-medium transition-colors`}>
             <Link href="/auth/login">Iniciar sesión</Link>
           </button>
           <button className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-medium transition-colors">
