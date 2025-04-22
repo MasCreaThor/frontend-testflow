@@ -85,3 +85,6 @@ export const { logout, clearError } = authSlice.actions;
 
 // Exportar reducer
 export default authSlice.reducer;
+export type { AuthState };
+export type { User };
+// Tipos para el estado de la interfaz de usuario (UI)
