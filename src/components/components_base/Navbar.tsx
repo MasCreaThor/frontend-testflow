@@ -107,9 +107,7 @@ export default function App() {
             <path d="M26 22L30 18L32 20L28 24L26 22Z" fill="currentColor"/>
             <path d="M25 23L24 26L27 25L25 23Z" fill="currentColor"/>
           </svg>
-          <p className="font-bold text-inherit ml-2">
-            {useAppSelector(state => state.ui.appInfo.companyName).substring(0, 2)}
-          </p>
+       
         </NavbarBrand>
       </NavbarContent>
 

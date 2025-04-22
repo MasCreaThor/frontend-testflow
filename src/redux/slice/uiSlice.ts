@@ -58,7 +58,7 @@ const getInitialTheme = (): 'light' | 'dark' => {
 // Estado inicial para UI
 const initialState: UIState = {
     appInfo: {
-        companyName: 'TestFlow',
+        companyName: 'Test Flow',
         description: 'Transformando la educación con tecnología avanzada e inteligencia artificial.',
         copyright: 'Todos los derechos reservados.'
     },

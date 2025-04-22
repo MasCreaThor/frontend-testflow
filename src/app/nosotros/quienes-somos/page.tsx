@@ -14,16 +14,12 @@ interface HeaderProps {
 
 export default function AboutUs({ toggleSidebar, sidebarOpen }: HeaderProps) {
   return (
-<<<<<<< HEAD:src/app/about/page.tsx
-    <div className="min-h-screen bg-blue-50 dark:bg-gray-800 flex flex-col md:flex-row">
-=======
-    <>
-    <Header/>
-    <App />
-    
-    {/* Contenedor principal */}
-    <div className="min-h-screen bg-indigo-600 flex flex-col md:flex-row">
->>>>>>> e9c08eb (feat: integrar Redux para gestión de estado y persistencia de tema):src/app/nosotros/quienes-somos/page.tsx
+<>
+<Header/>
+<App />
+
+{/* Contenedor principal */}
+<div className="min-h-screen bg-indigo-600 flex flex-col md:flex-row">
       {/* Panel izquierdo - Información sobre la plataforma */}
       <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-6">TestFlow</h1>
