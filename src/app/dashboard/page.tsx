@@ -1,129 +1,122 @@
-// src/app/dashboard/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import useAuthStore from '@/store/auth.store';
-import '@/styles/dashboard-page.css';
+import React, { useEffect, useState } from 'react';
+import DashboardLayout from '@/components/layout/DashboardLayout/DashboardLayout';
+import { 
+  WelcomeCard, 
+  StatsCard, 
+  ActivityCard, 
+  ActionsCard,
+  UserAvatar
+} from '@/components/dashboard';
+import { useAuth } from '@/contexts/AuthContext';
+import { useDashboardLayout } from '@/contexts/DashboardLayoutContext';
+import PeopleService from '@/services/people.service';
+import { People } from '@/types/people.types';
 
+/**
+ * Dashboard page - Main page after login
+ */
 export default function DashboardPage() {
-  const { user } = useAuthStore();
-  const [greeting, setGreeting] = useState('');
+  const { user } = useAuth();
+  const { isSidebarCollapsed } = useDashboardLayout();
+  
+  const [profile, setProfile] = useState<People | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-
+  // Fetch user profile
   useEffect(() => {
-    const hour = new Date().getHours();
-    
-    if (hour >= 5 && hour < 12) {
-      setGreeting('Buenos días');
-    } else if (hour >= 12 && hour < 18) {
-      setGreeting('Buenas tardes');
-    } else {
-      setGreeting('Buenas noches');
-    }
-  }, []);
+    const fetchProfile = async () => {
+      if (!user?._id) return;
 
-  const stats = [
-    { label: 'Documentos', value: 12, icon: 'fas fa-file-alt', color: '#4F46E5' },
-    { label: 'Cuestionarios', value: 25, icon: 'fas fa-question-circle', color: '#10B981' },
-    { label: 'Sesiones de estudio', value: 18, icon: 'fas fa-book', color: '#F59E0B' },
-    { label: 'Horas de estudio', value: 42, icon: 'fas fa-clock', color: '#8B5CF6' },
-  ];
+      try {
+        const data = await PeopleService.getPeopleByUserId(user._id);
+        setProfile(data);
+      } catch (err: any) {
+        console.error('Error fetching profile:', err);
+        setError('No se pudo cargar el perfil. Por favor, inténtalo de nuevo más tarde.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
+
+  // Determine grid classes based on sidebar state
+  const getGridClasses = () => {
+    // Base classes for all screen sizes
+    let classes = 'grid gap-6 ';
+    
+    // Add responsive classes
+    if (isSidebarCollapsed) {
+      // When sidebar is collapsed, we can show more columns
+      classes += 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+    } else {
+      // When sidebar is expanded, we have less space
+      classes += 'grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3';
+    }
+    
+    return classes;
+  };
+
+  // Render error state
+  if (error) {
+    return (
+      <DashboardLayout>
+        <div className="rounded-lg bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800 dark:text-red-200">Error</h3>
+              <div className="mt-2 text-sm text-red-700 dark:text-red-300">
+                <p>{error}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
-    <div className="dashboard-page">
-      <div className="welcome-section">
-        <h1 className="welcome-title">
-          {greeting}, Usuario
-        </h1>
-        <p className="welcome-subtitle">
-          Bienvenido de nuevo a tu panel de estudio🫡
-        </p>
+    <DashboardLayout>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+        
+        {/* User profile summary */}
+        {!loading && profile && (
+          <div className="flex items-center space-x-3">
+            <div className="text-right hidden sm:block">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                {profile.firstName} {profile.lastName}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {user?.email}
+              </p>
+            </div>
+            <UserAvatar profile={profile} />
+          </div>
+        )}
       </div>
 
-      <div className="stats-grid">
-        {stats.map((stat, index) => (
-          <div className="stat-card" key={index}>
-            <div className="stat-icon" style={{ backgroundColor: stat.color }}>
-              <i className={stat.icon}></i>
-            </div>
-            <div className="stat-content">
-              <span className="stat-value">{stat.value}</span>
-              <span className="stat-label">{stat.label}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="dashboard-sections">
-        <div className="dashboard-section">
-          <div className="section-header">
-            <h2 className="section-title">Actividad Reciente</h2>
-            <button className="section-action">Ver todo</button>
-          </div>
-          <div className="activity-list">
-            <div className="activity-item">
-              <div className="activity-icon">
-                <i className="fas fa-file-alt"></i>
-              </div>
-              <div className="activity-content">
-                <p className="activity-text">Has subido un nuevo documento <span>Apuntes de Física</span></p>
-                <p className="activity-time">Hace 2 horas</p>
-              </div>
-            </div>
-            <div className="activity-item">
-              <div className="activity-icon">
-                <i className="fas fa-question-circle"></i>
-              </div>
-              <div className="activity-content">
-                <p className="activity-text">Has completado un cuestionario <span>Introducción a la Programación</span></p>
-                <p className="activity-time">Ayer</p>
-              </div>
-            </div>
-            <div className="activity-item">
-              <div className="activity-icon">
-                <i className="fas fa-book"></i>
-              </div>
-              <div className="activity-content">
-                <p className="activity-text">Sesión de estudio completada <span>45 minutos</span></p>
-                <p className="activity-time">Hace 2 días</p>
-              </div>
-            </div>
-          </div>
+      {/* Dashboard content */}
+      <div className={getGridClasses()}>
+        {/* Welcome Card - Full width */}
+        <div className="col-span-full">
+          <WelcomeCard profile={profile} loading={loading} />
         </div>
-
-        <div className="dashboard-section">
-          <div className="section-header">
-            <h2 className="section-title">Cuestionarios Recomendados</h2>
-            <button className="section-action">Ver más</button>
-          </div>
-          <div className="recommendations-list">
-            <div className="recommendation-item">
-              <div className="recommendation-icon">
-                <i className="fas fa-star"></i>
-              </div>
-              <div className="recommendation-content">
-                <h3 className="recommendation-title">Matemáticas Avanzadas</h3>
-                <p className="recommendation-desc">20 preguntas · Nivel intermedio</p>
-              </div>
-              <button className="recommendation-action">
-                <i className="fas fa-arrow-right"></i>
-              </button>
-            </div>
-            <div className="recommendation-item">
-              <div className="recommendation-icon">
-                <i className="fas fa-star"></i>
-              </div>
-              <div className="recommendation-content">
-                <h3 className="recommendation-title">Fundamentos de Programación</h3>
-                <p className="recommendation-desc">15 preguntas · Nivel básico</p>
-              </div>
-              <button className="recommendation-action">
-                <i className="fas fa-arrow-right"></i>
-              </button>
-            </div>
-          </div>
-        </div>
+        
+        {/* Main dashboard cards */}
+        <StatsCard profile={profile} loading={loading} />
+        <ActivityCard profile={profile} loading={loading} />
+        <ActionsCard loading={loading} />
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

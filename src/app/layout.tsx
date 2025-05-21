@@ -1,16 +1,17 @@
-// src/app/layout.tsx
-import { Metadata } from 'next';
-import AuthProvider from '@/components/providers/AuthProvider';
-import '@/styles/globals.css';
-import ProviderRedux from '@/redux/ProviderRedux';
- 
- 
- 
- 
+import './globals.css'
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import { AuthProvider } from '@/contexts/AuthContext'
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter'
+})
+
 export const metadata: Metadata = {
-  title: 'TestFlow - Aprende de forma inteligente',
-  description: 'Aplicación de aprendizaje personalizado',
-};
+  title: 'TestFlow - Plataforma Educativa',
+  description: 'Plataforma para la gestión de aprendizaje y evaluación de conocimientos',
+}
 
 export default function RootLayout({
   children,
@@ -19,22 +20,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <head>
-        <link 
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" 
-          rel="stylesheet" 
-        />
-      </head>
-      <body>
-        <ProviderRedux>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-        </ProviderRedux>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-       
-       
+      <body className={`${inter.variable} font-sans`}>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
-  );
+  )
 }
