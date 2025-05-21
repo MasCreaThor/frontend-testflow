@@ -2,7 +2,11 @@
 import { Metadata } from 'next';
 import AuthProvider from '@/components/providers/AuthProvider';
 import '@/styles/globals.css';
-
+import ProviderRedux from '@/redux/ProviderRedux';
+ 
+ 
+ 
+ 
 export const metadata: Metadata = {
   title: 'TestFlow - Aprende de forma inteligente',
   description: 'Aplicación de aprendizaje personalizado',
@@ -22,9 +26,14 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <ProviderRedux>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ProviderRedux>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+       
+       
       </body>
     </html>
   );

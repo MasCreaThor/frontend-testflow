@@ -7,13 +7,14 @@ import LoginForm from '@/components/auth/LoginForm';
 import useAuthStore from '@/store/auth.store';
 import '@/styles/auth.css';
 
+
 export default function LoginPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuthStore();
 
   // Redirigir al dashboard si ya está autenticado
   useEffect(() => {
-    if (isAuthenticated && !isLoading) {
+    if (isAuthenticated && !isLoading ) {
       router.push('/dashboard');
     }
   }, [isAuthenticated, isLoading, router]);

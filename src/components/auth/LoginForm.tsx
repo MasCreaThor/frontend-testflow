@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@/store/auth.store';
 import '@/styles/login.css';
+import { signIn, useSession } from 'next-auth/react';
 
 // esquema de validaciones
 const loginSchema = z.object({
@@ -22,6 +23,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const router = useRouter();
   const { login, isLoading, error, clearError } = useAuthStore();
+  
   
   const {
     register,
@@ -160,7 +162,7 @@ export default function LoginForm() {
             <span className="separator-text">o</span>
           </div>
           
-          <button type="button" className="social-login-button">
+          <button type="button" onClick={() => signIn("google")} className="social-login-button">
             <i className="fab fa-google social-icon"></i>
             Continuar con Google
           </button>

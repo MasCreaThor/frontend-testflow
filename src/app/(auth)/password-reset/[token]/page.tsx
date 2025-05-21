@@ -8,9 +8,9 @@ import '@/styles/auth.css';
 
 export default function ResetPasswordPage() {
   const params = useParams();
-  const token = params.token as string;
+  const token = params?.token as string | undefined;
 
-  if (!token) {
+  if (!params || !token) {
     return (
       <div className="auth-page">
         <div className="auth-container">

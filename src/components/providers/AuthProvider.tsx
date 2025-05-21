@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import useAuthStore from '@/store/auth.store';
 import '@/styles/loading.css';
+import {SessionProvider} from "next-auth/react";
 
 interface AuthProviderProps {
   children: React.ReactNode;
