@@ -37,11 +37,12 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   if (profile?.profileImage) {
     return (
       <div className={`relative ${sizeClasses[size]} rounded-full overflow-hidden ${className}`}>
-        {/* Using standard img tag to avoid Next.js Image domain restrictions */}
-        <img 
+        <Image
           src={profile.profileImage}
           alt={`${profile.firstName} ${profile.lastName}`}
-          className="object-cover w-full h-full"
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 33vw"
         />
       </div>
     );
