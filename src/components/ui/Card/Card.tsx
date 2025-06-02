@@ -1,11 +1,11 @@
-import React, { HTMLAttributes } from 'react';
+import React, { HTMLAttributes, ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   /**
    * Card title
    */
-  title?: string;
+  title?: string | ReactNode; // Ahora no hay conflicto
   /**
    * Card subtitle
    */

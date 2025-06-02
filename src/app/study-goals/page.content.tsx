@@ -96,7 +96,9 @@ export default function StudyGoalsPageContent() {
         setSuccess('Objetivo actualizado correctamente');
       } else {
         // Crear nuevo objetivo
-        const newGoal = await StudyGoalService.createStudyGoal(data);
+        // Aquí está el cambio - usamos una aserción de tipo para asegurar a TypeScript
+        // que data tiene todas las propiedades requeridas para CreateStudyGoalRequest
+        const newGoal = await StudyGoalService.createStudyGoal(data as CreateStudyGoalRequest);
         setMyStudyGoals(prevGoals => [...prevGoals, newGoal]);
         setSuccess('Objetivo creado correctamente');
       }

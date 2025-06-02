@@ -15,7 +15,12 @@ interface DashboardLayoutProps {
  * Inner component that uses the dashboard layout context
  */
 const DashboardLayoutInner: React.FC<DashboardLayoutProps> = ({ children }) => {
-  const { isSidebarCollapsed, toggleSidebar, closeSidebar } = useDashboardLayout();
+  const { 
+    isSidebarCollapsed, 
+    isMobileMenuOpen, 
+    toggleSidebar, 
+    closeMobileMenu 
+  } = useDashboardLayout();
   const { loading } = useProtectedRoute();
 
   if (loading) {
@@ -33,7 +38,7 @@ const DashboardLayoutInner: React.FC<DashboardLayoutProps> = ({ children }) => {
         <Header inDashboard={true} />
       </div>
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 relative">
         {/* Sidebar - Desktop */}
         <div className={`hidden lg:block flex-shrink-0 transition-all duration-300 ${
           isSidebarCollapsed ? 'w-16' : 'w-64'
@@ -41,9 +46,34 @@ const DashboardLayoutInner: React.FC<DashboardLayoutProps> = ({ children }) => {
           <div className={`h-full fixed transition-all duration-300 ${
             isSidebarCollapsed ? 'w-16' : 'w-64'
           }`}>
-            <Sidebar isCollapsed={isSidebarCollapsed} onToggle={toggleSidebar} />
+            <Sidebar 
+              isCollapsed={isSidebarCollapsed} 
+              onToggle={toggleSidebar}
+              isMobile={false}
+            />
           </div>
         </div>
+
+        {/* Mobile Sidebar Overlay */}
+        {isMobileMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+              onClick={closeMobileMenu}
+              aria-hidden="true"
+            />
+            
+            {/* Mobile Sidebar */}
+            <div className="fixed inset-y-0 left-0 flex flex-col w-64 bg-white dark:bg-gray-900 z-30 lg:hidden transform transition-transform duration-300 ease-in-out">
+              <Sidebar 
+                isCollapsed={false}
+                isMobile={true}
+                onCloseMobile={closeMobileMenu}
+              />
+            </div>
+          </>
+        )}
 
         {/* Main Content */}
         <div className={`flex-1 transition-all duration-300 ${
@@ -56,10 +86,9 @@ const DashboardLayoutInner: React.FC<DashboardLayoutProps> = ({ children }) => {
                 type="button"
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
                 onClick={toggleSidebar}
+                aria-label="Abrir menú de navegación"
               >
-                <span className="sr-only">
-                  {isSidebarCollapsed ? 'Expandir menú' : 'Contraer menú'}
-                </span>
+                <span className="sr-only">Abrir menú</span>
                 <svg
                   className="h-6 w-6"
                   xmlns="http://www.w3.org/2000/svg"

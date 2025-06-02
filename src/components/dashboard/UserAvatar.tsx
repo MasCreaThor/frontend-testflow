@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+//import Image from 'next/image';
 import { People } from '@/types/people.types';
 
 interface UserAvatarProps {
@@ -37,7 +37,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   if (profile?.profileImage) {
     return (
       <div className={`relative ${sizeClasses[size]} rounded-full overflow-hidden ${className}`}>
-        {/* Using standard img tag to avoid Next.js Image domain restrictions */}
+        {/* Usando standard img tag en lugar de Next.js Image */}
         <img 
           src={profile.profileImage}
           alt={`${profile.firstName} ${profile.lastName}`}
