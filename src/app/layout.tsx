@@ -1,7 +1,10 @@
+// src/app/layout.tsx
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { AuthProvider } from '@/contexts/AuthContext'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
+import SentryTrackingProvider from '@/components/common/SentryTrackingProvider'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -21,9 +24,13 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${inter.variable} font-sans`}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <SentryTrackingProvider>
+              {children}
+            </SentryTrackingProvider>
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )
