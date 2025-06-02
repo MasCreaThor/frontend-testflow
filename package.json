@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && npm run sentry:sourcemaps",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org itp-6q --project javascript-react .next && sentry-cli sourcemaps upload --org itp-6q --project javascript-react .next"
   },
   "dependencies": {
+    "@sentry/cli": "^2.46.0",
     "@sentry/nextjs": "^9.24.0",
     "@sentry/react": "^9.24.0",
     "@sentry/replay": "^7.116.0",
