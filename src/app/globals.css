@@ -59,4 +59,99 @@ body {
   .card {
     @apply bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden;
   }
+
+  /* Sidebar mobile animation styles */
+  .sidebar-mobile-enter {
+    @apply transform -translate-x-full;
+  }
+  
+  .sidebar-mobile-enter-active {
+    @apply transform translate-x-0 transition-transform duration-300 ease-out;
+  }
+  
+  .sidebar-mobile-exit {
+    @apply transform translate-x-0;
+  }
+  
+  .sidebar-mobile-exit-active {
+    @apply transform -translate-x-full transition-transform duration-300 ease-in;
+  }
+
+  /* Backdrop animation */
+  .backdrop-enter {
+    @apply opacity-0;
+  }
+  
+  .backdrop-enter-active {
+    @apply opacity-100 transition-opacity duration-300 ease-out;
+  }
+  
+  .backdrop-exit {
+    @apply opacity-100;
+  }
+  
+  .backdrop-exit-active {
+    @apply opacity-0 transition-opacity duration-300 ease-in;
+  }
+
+  /* Improved focus styles for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  /* Mobile-first responsive sidebar */
+  .mobile-sidebar {
+    @apply fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-900 shadow-lg transform transition-transform duration-300 ease-in-out;
+  }
+
+  .mobile-sidebar-open {
+    @apply translate-x-0;
+  }
+
+  .mobile-sidebar-closed {
+    @apply -translate-x-full;
+  }
+
+  /* Smooth transitions for sidebar toggle */
+  .sidebar-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  /* Improved button hover states */
+  .nav-button {
+    @apply inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 transition-colors duration-200;
+  }
+
+  /* Sidebar link styles */
+  .sidebar-link {
+    @apply flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200;
+  }
+
+  .sidebar-link-active {
+    @apply bg-primary-500 text-white;
+  }
+
+  .sidebar-link-inactive {
+    @apply text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800;
+  }
+}
+
+/* Additional utility classes for improved mobile experience */
+@layer utilities {
+  .prevent-scroll {
+    @apply overflow-hidden;
+  }
+
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Touch-friendly sizing for mobile */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
 }
