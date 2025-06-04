@@ -8,11 +8,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // Configuración experimental para instrumentación
-  experimental: {
-    instrumentationHook: true,
-  },
-  
   // Configuración de headers de seguridad
   async headers() {
     return [

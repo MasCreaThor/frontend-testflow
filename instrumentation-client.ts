@@ -1,5 +1,6 @@
+// instrumentation-client.ts
 import * as Sentry from "@sentry/nextjs";
-import { Replay } from "@sentry/replay"; // 👈 esta es la integración correcta
+import { Replay } from "@sentry/replay";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -17,11 +18,23 @@ Sentry.init({
       maskAllText: true,
       blockAllMedia: false,
       unmask: ['.sentry-unmask'],
-    }), // 👈 integración correcta
+    }),
   ],
 
   beforeBreadcrumb(breadcrumb, hint) {
-    // ... tu lógica está bien aquí
+    // Filtrar breadcrumbs innecesarios
+    if (breadcrumb.category === 'console' && breadcrumb.level !== 'error') {
+      return null;
+    }
+
+    if (breadcrumb.category === 'navigation') {
+      breadcrumb.level = 'info';
+    }
+
+    if (breadcrumb.category === 'ui.click') {
+      breadcrumb.level = 'info';
+    }
+
     return breadcrumb;
   },
 
@@ -30,19 +43,36 @@ Sentry.init({
       console.log('Sentry Event:', event);
     }
 
-    const user = localStorage.getItem('accessToken');
-    if (user) {
+    // Verificar si el usuario está autenticado
+    const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('accessToken');
+    
+    if (isAuthenticated) {
       event.user = {
         ...event.user,
         authenticated: true,
       };
     }
 
-    event.tags = {
-      ...event.tags,
-      userAgent: navigator.userAgent,
-      url: window.location.href,
-    };
+    // Agregar contexto del navegador
+    if (typeof window !== 'undefined') {
+      event.tags = {
+        ...event.tags,
+        userAgent: navigator.userAgent,
+        url: window.location.href,
+      };
+
+      event.contexts = {
+        ...event.contexts,
+        browser: {
+          name: navigator.userAgent,
+          version: navigator.appVersion,
+        },
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        },
+      };
+    }
 
     return event;
   },
@@ -55,6 +85,9 @@ Sentry.init({
     'Non-Error promise rejection captured',
     'ResizeObserver loop limit exceeded',
     'Script error.',
+    'ChunkLoadError',
+    'Loading chunk',
+    'Loading CSS chunk',
   ],
 
   beforeSendTransaction(event) {

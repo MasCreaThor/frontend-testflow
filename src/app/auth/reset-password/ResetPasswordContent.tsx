@@ -1,27 +1,45 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import ResetPasswordForm from '@/components/auth/ResetPasswordForm/ResetPasswordForm';
 import Card from '@/components/ui/Card/Card';
 import Link from 'next/link';
 
 /**
  * Contenido de la página de restablecimiento de contraseña
- * Este componente maneja useSearchParams() que requiere Suspense
+ * Versión corregida que no usa useSearchParams directamente
  */
 export default function ResetPasswordContent() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Registrar información de depuración si se recibe un token
+  // Obtener el token de manera segura solo en el cliente
   useEffect(() => {
-    if (token) {
-      console.log('Token de restablecimiento recibido en URL');
-    } else {
-      console.log('No se encontró token en los parámetros de URL');
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+      setToken(urlToken);
+      setIsLoading(false);
+      
+      if (urlToken) {
+        console.log('Token de restablecimiento recibido en URL');
+      } else {
+        console.log('No se encontró token en los parámetros de URL');
+      }
     }
-  }, [token]);
+  }, []);
+  
+  // Mostrar loading mientras se obtiene el token
+  if (isLoading) {
+    return (
+      <Card>
+        <div className="text-center p-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Cargando...</p>
+        </div>
+      </Card>
+    );
+  }
   
   // Check if token exists in URL
   if (!token) {
