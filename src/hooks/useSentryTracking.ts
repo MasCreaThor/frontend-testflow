@@ -1,8 +1,8 @@
 // src/hooks/useSentryTracking.ts
 'use client';
 
-import { useCallback, useEffect } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -22,13 +22,20 @@ export const useSentryTracking = (options: TrackingOptions = {}) => {
   } = options;
 
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { user, isLoggedIn } = useAuth();
+  const [searchParams, setSearchParams] = useState<string>('');
+
+  // Safely get search params only on client side
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setSearchParams(window.location.search);
+    }
+  }, []);
 
   // Track page views
   useEffect(() => {
-    if (enablePageViews) {
-      const url = `${pathname}${searchParams?.toString() ? `?${searchParams.toString()}` : ''}`;
+    if (enablePageViews && typeof window !== 'undefined') {
+      const url = `${pathname}${searchParams}`;
       
       Sentry.addBreadcrumb({
         category: 'navigation',
@@ -36,7 +43,7 @@ export const useSentryTracking = (options: TrackingOptions = {}) => {
         level: 'info',
         data: {
           path: pathname,
-          search: searchParams?.toString(),
+          search: searchParams,
           timestamp: new Date().toISOString(),
         },
       });
@@ -44,7 +51,7 @@ export const useSentryTracking = (options: TrackingOptions = {}) => {
       // Set page context
       Sentry.setContext('page', {
         path: pathname,
-        search: searchParams?.toString(),
+        search: searchParams,
         url,
       });
 
@@ -54,7 +61,7 @@ export const useSentryTracking = (options: TrackingOptions = {}) => {
         op: 'navigation',
         attributes: {
           path: pathname,
-          search: searchParams?.toString(),
+          search: searchParams,
         },
       }, (span) => {
         // Span se completa automáticamente
